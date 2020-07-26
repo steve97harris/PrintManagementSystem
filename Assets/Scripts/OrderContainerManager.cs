@@ -83,7 +83,7 @@ namespace DefaultNamespace
             transformList.Add(entryTransform);
         }
         
-        public static void AddOrderEntry(string orderNumber, string date, string customerName, string information, string status)
+        public void AddOrderEntry(string orderNumber, string date, string customerName, string information, string status)
         {
             // create entry
             var orderEntry = new OrderEntry()
@@ -108,7 +108,7 @@ namespace DefaultNamespace
             PlayerPrefs.Save();
         }
 
-        public static void RemoveLeaderboardEntry(string customerName)
+        public void RemoveOrderEntry(string customerName)
         {
             // load saved entries
             var jsonString = PlayerPrefs.GetString("orderTable");

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Xml;
 using DefaultNamespace;
 using UnityEngine;
 
@@ -35,8 +36,13 @@ public class OrderManager : MonoBehaviour
     {
         Debug.LogError("File Created: " + e.Name + ", Path: " + e.FullPath);
         
-        // var orderPanel = new OrderContainerManager();
-        // orderPanel.GenerateOrderPanel();
+        var doc = new XmlDocument();
+        doc.Load(e.FullPath);
+        var uniqueCode = doc.GetElementsByTagName("UNIQUE_CODE");
+        Debug.Log("unique code = " + uniqueCode[0].InnerText);
+
+        var orderPanel = gameObject.AddComponent<OrderContainerManager>();
+        // orderPanel.AddOrderEntry();
     }
 
     // public void Dispose()
