@@ -10,22 +10,16 @@ namespace DefaultNamespace
 {
     public class OrderManager : MonoBehaviour
     {
-            private FileSystemWatcher watcher;
-            
+        public static string[] currentOrder = new string[6]; 
             void Start()
             {
                 Watcher();
             }
 
-            void Update()
-            {
-                
-            }
-
             private void Watcher()
             {
-                var path = @"c:\YR\ExampleOrders\Basket\";
-                watcher = new FileSystemWatcher
+                var path = @"C:\YR\L11470_USC\Saves\Basket";
+                var watcher = new FileSystemWatcher
                 {
                     Path = path, 
                     NotifyFilter = NotifyFilters.LastWrite, 
@@ -47,7 +41,10 @@ namespace DefaultNamespace
                 
                 var xmlBasicInfo = ReadBasicXmlInfo(e);
 
-                // OrderContainerManager.AddOrderEntry(xmlBasicInfo[0], xmlBasicInfo[1], xmlBasicInfo[2], xmlBasicInfo[3], xmlBasicInfo[4]);
+                for (int i = 0; i < xmlBasicInfo.Length; i++)
+                {
+                    currentOrder[i] = xmlBasicInfo[i];
+                }
             }
         
             private string[] ReadBasicXmlInfo(FileSystemEventArgs e)
@@ -62,10 +59,11 @@ namespace DefaultNamespace
                 
                 var basicInfo = new string[5];
                 basicInfo[0] = uniqueCodeNode[0].InnerText;;
-                basicInfo[1] = dateNode[0].InnerText;;
-                basicInfo[2] = "New";
+                basicInfo[1] = customerNameNode[0].InnerText;;
+                basicInfo[2] = dateNode[0].InnerText;
                 basicInfo[3] = infoNode[0].InnerText;;
-                basicInfo[4] = customerNameNode[0].InnerText;
+                basicInfo[4] = "New";
+                basicInfo[5] = e.FullPath;
 
                 return basicInfo;
             }
@@ -76,5 +74,6 @@ namespace DefaultNamespace
             //     watcher.Changed -= OnChanged;
             //     this.watcher.Dispose();
             // }
+        
     }
 }

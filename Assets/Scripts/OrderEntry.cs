@@ -10,13 +10,8 @@ namespace DefaultNamespace
         public string uniqueCode;
         public string date;
         public string status;        // may need changing due to dropdown option
-        public string information;
+        [FormerlySerializedAs("information")] public string metaDataPath;
         public string customerName;
-        
-    }
-    
-    public class OrderCatalogue
-    {
-        public List<OrderEntry> orderEntryList;
+        public string basketDataPath;
     }
 }
