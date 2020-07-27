@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,10 +12,16 @@ namespace DefaultNamespace
         public Transform entryTemplate;
         private List<Transform> _orderCatalogueEntryTransformList;
 
+        private void FixedUpdate()
+        {
+            
+        }
+
         private void Awake()
         {
-            // AddOrderEntry("#182734", "12/32/2312","avocado", "infor",  "In Progress");
-            // RemoveLeaderboardEntry("");
+            
+            // AddOrderEntry("#slug", "12/32/2312","sled", "infor",  "In Progress");
+            // RemoveOrderEntry("");
             
             // sort by time
             // for (int i = 0; i < leaderboard.leaderboardEntryList.Count; i++)
@@ -73,31 +80,41 @@ namespace DefaultNamespace
             }
 
             var entryDate = orderEntry.date;
-            var entryOrderNumber = orderEntry.orderNumber;
+            var entryUniqueCode = orderEntry.uniqueCode;
             var entryCustomerName = orderEntry.customerName;
             
             entryTransform.Find("Date").GetComponent<Text>().text = entryDate;
-            entryTransform.Find("OrderNumber").GetComponent<Text>().text = entryOrderNumber;
+            entryTransform.Find("UniqueCode").GetComponent<Text>().text = entryUniqueCode;
             entryTransform.Find("CustomerName").GetComponent<Text>().text = entryCustomerName;
             
             transformList.Add(entryTransform);
         }
         
-        public void AddOrderEntry(string orderNumber, string date, string customerName, string information, string status)
+        public static void AddOrderEntry(string uniqueCode, string date, string customerName, string information, string status)
         {
+            Debug.Log("Scaramuchi");
+            
             // create entry
             var orderEntry = new OrderEntry()
             {
-                orderNumber = orderNumber,
+                uniqueCode = uniqueCode,
                 date = date,
                 customerName = customerName,
                 information = information,
                 status = status
             };
             
+            Debug.Log(uniqueCode);
+            Debug.Log(date);
+            Debug.Log(customerName);
+            Debug.Log(information);
+            Debug.Log(status);
+            
             // load saved entries
             var jsonString = PlayerPrefs.GetString("orderTable");
             var orderCatalogue = JsonUtility.FromJson<OrderCatalogue>(jsonString);
+            
+            Debug.Log(orderCatalogue);
             
             // add new entry to leaderboard
             orderCatalogue.orderEntryList.Add(orderEntry);
@@ -108,7 +125,7 @@ namespace DefaultNamespace
             PlayerPrefs.Save();
         }
 
-        public void RemoveOrderEntry(string customerName)
+        public static void RemoveOrderEntry(string customerName)
         {
             // load saved entries
             var jsonString = PlayerPrefs.GetString("orderTable");

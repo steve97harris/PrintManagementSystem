@@ -1,54 +1,80 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using DefaultNamespace;
 using UnityEngine;
 
-public class OrderManager : MonoBehaviour
+namespace DefaultNamespace
 {
-    // private FileSystemWatcher watcher;
-    void Start()
+    public class OrderManager : MonoBehaviour
     {
-        Watcher();
-    }
+            private FileSystemWatcher watcher;
+            
+            void Start()
+            {
+                Watcher();
+            }
 
-    private void Watcher()
-    {
-        var path = @"c:\YR\ExampleOrders\Meta\";
-        var watcher = new FileSystemWatcher
-        {
-            Path = path, 
-            NotifyFilter = NotifyFilters.LastWrite, 
-            Filter = "*.*"
-        };
-        watcher.Changed += new FileSystemEventHandler(OnChanged);
-        watcher.Created += new FileSystemEventHandler(OnCreated);
-        watcher.EnableRaisingEvents = true;
-    }
-    
-    private void OnChanged(object source, FileSystemEventArgs e)
-    {
-        //Copies file to another directory.
-    }
+            void Update()
+            {
+                
+            }
 
-    private void OnCreated(object source, FileSystemEventArgs e)
-    {
-        Debug.LogError("File Created: " + e.Name + ", Path: " + e.FullPath);
+            private void Watcher()
+            {
+                var path = @"c:\YR\ExampleOrders\Basket\";
+                watcher = new FileSystemWatcher
+                {
+                    Path = path, 
+                    NotifyFilter = NotifyFilters.LastWrite, 
+                    Filter = "*.*"
+                };
+                watcher.Changed += new FileSystemEventHandler(OnChanged);
+                watcher.Created += new FileSystemEventHandler(OnCreated);
+                watcher.EnableRaisingEvents = true;
+            }
+            
+            private void OnChanged(object source, FileSystemEventArgs e)
+            {
+                //Copies file to another directory.
+            }
         
-        var doc = new XmlDocument();
-        doc.Load(e.FullPath);
-        var uniqueCode = doc.GetElementsByTagName("UNIQUE_CODE");
-        Debug.Log("unique code = " + uniqueCode[0].InnerText);
+            private void OnCreated(object source, FileSystemEventArgs e)
+            {
+                Debug.LogError("File Created: " + e.Name + ", Path: " + e.FullPath);
+                
+                var xmlBasicInfo = ReadBasicXmlInfo(e);
 
-        var orderPanel = gameObject.AddComponent<OrderContainerManager>();
-        // orderPanel.AddOrderEntry();
+                // OrderContainerManager.AddOrderEntry(xmlBasicInfo[0], xmlBasicInfo[1], xmlBasicInfo[2], xmlBasicInfo[3], xmlBasicInfo[4]);
+            }
+        
+            private string[] ReadBasicXmlInfo(FileSystemEventArgs e)
+            {
+                var doc = new XmlDocument();
+                doc.Load(e.FullPath);
+                
+                var uniqueCodeNode = doc.GetElementsByTagName("UNIQUE_CODE");
+                var dateNode = doc.GetElementsByTagName("TIMESTAMP");
+                var infoNode = doc.GetElementsByTagName("Item");
+                var customerNameNode = doc.GetElementsByTagName("COLLECTION_NAME");
+                
+                var basicInfo = new string[5];
+                basicInfo[0] = uniqueCodeNode[0].InnerText;;
+                basicInfo[1] = dateNode[0].InnerText;;
+                basicInfo[2] = "New";
+                basicInfo[3] = infoNode[0].InnerText;;
+                basicInfo[4] = customerNameNode[0].InnerText;
+
+                return basicInfo;
+            }
+        
+            // public void Dispose()
+            // {
+            //     // avoiding resource leak
+            //     watcher.Changed -= OnChanged;
+            //     this.watcher.Dispose();
+            // }
     }
-
-    // public void Dispose()
-    // {
-    //     // avoiding resource leak
-    //     watcher.Changed -= OnChanged;
-    //     this.watcher.Dispose();
-    // }
 }
