@@ -43,8 +43,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03e8e6e18c8b4b7682ed1e3c188da1ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueCode: {fileID: 8374927538020347924}
-  orderInfo: {fileID: 6142533210076595707}
+  orderDetailsCanvas: {fileID: 7690220612635313105, guid: 106863ce88e3bf14ebccabc6cbf91111,
+    type: 3}
+  pmsMainCanvas: {fileID: 0}
+  orderEntry: {fileID: 7341719315885721304}
+  metaDataDisplay: {fileID: 0}
 --- !u!1 &2235975761805825517
 GameObject:
   m_ObjectHideFlags: 0
@@ -213,7 +216,7 @@ GameObject:
   - component: {fileID: 6989932871013169085}
   - component: {fileID: 6142533210076595707}
   m_Layer: 5
-  m_Name: OrderInfo
+  m_Name: MetaDataFileName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -265,7 +268,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: info
+  m_text: meta
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -813,7 +816,7 @@ GameObject:
   - component: {fileID: 2229687592906992038}
   - component: {fileID: 170591257652191854}
   m_Layer: 5
-  m_Name: OrderTemplate
+  m_Name: OrderEntry
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -896,8 +899,9 @@ MonoBehaviour:
   entryUniqueCode: {fileID: 8374927538020347924}
   entryDate: {fileID: 7781763409178881064}
   entryStatus: {fileID: 8277272408923907326}
-  entryInformation: {fileID: 6142533210076595707}
+  entryMetaData: {fileID: 6142533210076595707}
   entryCustomerName: {fileID: 6954173483142020038}
+  basketDataPath: 
 --- !u!114 &170591257652191854
 MonoBehaviour:
   m_ObjectHideFlags: 0
