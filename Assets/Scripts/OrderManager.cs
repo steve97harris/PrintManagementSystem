@@ -10,7 +10,7 @@ namespace DefaultNamespace
 {
     public class OrderManager : MonoBehaviour
     {
-        public static string[] currentOrder = new string[6]; 
+            public static string[] currentOrder = new string[6]; 
             void Start()
             {
                 Watcher();
@@ -18,16 +18,16 @@ namespace DefaultNamespace
 
             private void Watcher()
             {
-                var path = @"C:\YR\L11470_USC\Saves\Basket";
-                var watcher = new FileSystemWatcher
+                var basketPath = OrderDetails._savesPath + @"\Basket";
+                var basketWatcher = new FileSystemWatcher
                 {
-                    Path = path, 
+                    Path = basketPath, 
                     NotifyFilter = NotifyFilters.LastWrite, 
                     Filter = "*.*"
                 };
-                watcher.Changed += new FileSystemEventHandler(OnChanged);
-                watcher.Created += new FileSystemEventHandler(OnCreated);
-                watcher.EnableRaisingEvents = true;
+                basketWatcher.Changed += new FileSystemEventHandler(OnChanged);
+                basketWatcher.Created += new FileSystemEventHandler(OnCreated);
+                basketWatcher.EnableRaisingEvents = true;
             }
             
             private void OnChanged(object source, FileSystemEventArgs e)
@@ -40,7 +40,7 @@ namespace DefaultNamespace
                 Debug.LogError("File Created: " + e.Name + ", Path: " + e.FullPath);
                 
                 var xmlBasicInfo = ReadBasicXmlInfo(e);
-
+                
                 for (int i = 0; i < xmlBasicInfo.Length; i++)
                 {
                     currentOrder[i] = xmlBasicInfo[i];
@@ -57,14 +57,14 @@ namespace DefaultNamespace
                 var infoNode = doc.GetElementsByTagName("Item");
                 var customerNameNode = doc.GetElementsByTagName("COLLECTION_NAME");
                 
-                var basicInfo = new string[5];
-                basicInfo[0] = uniqueCodeNode[0].InnerText;;
-                basicInfo[1] = customerNameNode[0].InnerText;;
+                var basicInfo = new string[6];
+                basicInfo[0] = uniqueCodeNode[0].InnerText;
+                basicInfo[1] = customerNameNode[0].InnerText;
                 basicInfo[2] = dateNode[0].InnerText;
-                basicInfo[3] = infoNode[0].InnerText;;
+                basicInfo[3] = infoNode[0].InnerText;
                 basicInfo[4] = "New";
                 basicInfo[5] = e.FullPath;
-
+                
                 return basicInfo;
             }
         
@@ -74,6 +74,5 @@ namespace DefaultNamespace
             //     watcher.Changed -= OnChanged;
             //     this.watcher.Dispose();
             // }
-        
     }
 }

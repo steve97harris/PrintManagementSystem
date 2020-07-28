@@ -15,7 +15,7 @@ namespace DefaultNamespace
 
         private string[] previousOrder = new string[6];
 
-        public static string SavePath => $"{Application.persistentDataPath}/orderTable.json";
+        public static string JsonTablePath => $"{Application.persistentDataPath}/orderTable.json";
 
         
         private void Start()
@@ -94,15 +94,15 @@ namespace DefaultNamespace
 
         private OrderTableSaveData GetSavedOrders()
         {
-            if (!File.Exists(SavePath))
+            if (!File.Exists(JsonTablePath))
             {
                 Debug.LogError("OrderTable does not exist - creating new one");
                 
-                File.Create(SavePath).Dispose();
+                File.Create(JsonTablePath).Dispose();
                 return new OrderTableSaveData();
             }
 
-            using (StreamReader stream = new StreamReader(SavePath))
+            using (StreamReader stream = new StreamReader(JsonTablePath))
             {
                 var json = stream.ReadToEnd();
                 return JsonUtility.FromJson<OrderTableSaveData>(json);
@@ -111,7 +111,7 @@ namespace DefaultNamespace
 
         private void SaveOrders(OrderTableSaveData orderTableSaveData)
         {
-            using (StreamWriter stream = new StreamWriter(SavePath))
+            using (StreamWriter stream = new StreamWriter(JsonTablePath))
             {
                 var json = JsonUtility.ToJson(orderTableSaveData, true);
                 stream.Write(json);
