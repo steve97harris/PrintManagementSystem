@@ -31,8 +31,14 @@ namespace DefaultNamespace
 
         public void OrderNumberClicked()
         {
-            FindFilePaths();
-            
+            SetFilePaths();
+            InstantiateMetaData();
+
+            _pmsMainCanvas.SetActive(false);
+        }
+
+        private void InstantiateMetaData()
+        {
             var metaData = ExtractXmlData(_metaPath);
 
             Instantiate(orderDetailsCanvas, OrderManager.pms.transform);
@@ -45,11 +51,9 @@ namespace DefaultNamespace
             }
             
             metaDataDisplay.GetComponent<TextMeshProUGUI>().text = metaUi;
-            
-            _pmsMainCanvas.SetActive(false);
         }
 
-        private void FindFilePaths()
+        private void SetFilePaths()
         {
             _basketPath = orderEntry.GetComponent<OrderEntryUI>().basketDataPath;
 

@@ -57,6 +57,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxNumberOfEntries: 1000
-  orderHolderTransform: {fileID: 0}
+  orderHolderTransform: {fileID: 7553333416543595314, guid: f54c0af2a4c192948af0640344e37d15,
+    type: 3}
   orderEntryObject: {fileID: 7341719315885721304, guid: 4e17ba62b130711428e57c689498f20a,
     type: 3}

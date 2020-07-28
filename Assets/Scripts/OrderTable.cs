@@ -13,10 +13,9 @@ namespace DefaultNamespace
         
         private List<Transform> _orderCatalogueEntryTransformList;
 
-        private string[] previousOrder = new string[6];
+        private readonly string[] _previousOrder = new string[6];
 
-        public static string JsonTablePath => $"{Application.persistentDataPath}/orderTable.json";
-
+        private static string JsonTablePath => $"{Application.persistentDataPath}/orderTable.json";
         
         private void Start()
         {
@@ -32,13 +31,13 @@ namespace DefaultNamespace
         {
             // if unique code has changed, new order has arrived
             // if unique code is the same, new order will not be added
-            if (OrderManager.currentOrder[0] != null && OrderManager.currentOrder[0] != previousOrder[0])
+            if (OrderManager.currentOrder[0] == null || OrderManager.currentOrder[0] == _previousOrder[0]) 
+                return;
+            
+            AddEntry(OrderManager.currentOrder[0], OrderManager.currentOrder[1], OrderManager.currentOrder[2], OrderManager.currentOrder[3], OrderManager.currentOrder[4], OrderManager.currentOrder[5]);
+            for (int i = 0; i < _previousOrder.Length; i++)
             {
-                AddEntry(OrderManager.currentOrder[0], OrderManager.currentOrder[1], OrderManager.currentOrder[2], OrderManager.currentOrder[3], OrderManager.currentOrder[4], OrderManager.currentOrder[5]);
-                for (int i = 0; i < previousOrder.Length; i++)
-                {
-                    previousOrder[i] = OrderManager.currentOrder[i];
-                }
+                _previousOrder[i] = OrderManager.currentOrder[i];
             }
         }
 
