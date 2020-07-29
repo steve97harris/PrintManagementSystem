@@ -12,13 +12,12 @@ namespace DefaultNamespace
 {
     public class OrderManager : MonoBehaviour
     {
-        private FileSystemWatcher watcher; 
-        public static string[] currentOrder = new string[6];
-
-        public static GameObject pms;
+        public static readonly string[] CurrentOrder = new string[6];
+        public static GameObject PrintManagementSystem;
+        
         void Start()
         {
-            pms = GameObject.Find("PrintManagementSystem");
+            PrintManagementSystem = GameObject.Find("PrintManagementSystem");
             Watcher();
         }
 
@@ -49,7 +48,7 @@ namespace DefaultNamespace
                 
             for (int i = 0; i < orderBasicInfo.Length; i++)
             {
-                currentOrder[i] = orderBasicInfo[i];
+                CurrentOrder[i] = orderBasicInfo[i];
             }
         }
         
@@ -76,18 +75,11 @@ namespace DefaultNamespace
                 
             return orderInfo;
         }
-        
-        public void Dispose()
-        {
-            // avoiding resource leak
-            watcher.Changed -= OnChanged;
-            this.watcher.Dispose();
-        }
 
         public void BackToHomeScreen()
         {
-            var homeScreenCanvas = pms.transform.Find("PMSMainCanvas").gameObject;
-            var orderDetailsCanvas = pms.transform.Find("OrderDetailsCanvas(Clone)").gameObject;
+            var homeScreenCanvas = PrintManagementSystem.transform.Find("PMSMainCanvas").gameObject;
+            var orderDetailsCanvas = PrintManagementSystem.transform.Find("OrderDetailsCanvas(Clone)").gameObject;
             
             homeScreenCanvas.SetActive(true);
             Destroy(orderDetailsCanvas);

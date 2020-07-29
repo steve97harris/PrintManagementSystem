@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4838378340014137919}
   - component: {fileID: 4838378340014137918}
   - component: {fileID: 4838378340014137917}
+  - component: {fileID: 673090304392706329}
   m_Layer: 0
   m_Name: OrderManager
   m_TagString: Untagged
@@ -60,4 +61,18 @@ MonoBehaviour:
   orderHolderTransform: {fileID: 7553333416543595314, guid: f54c0af2a4c192948af0640344e37d15,
     type: 3}
   orderEntryObject: {fileID: 7341719315885721304, guid: 4e17ba62b130711428e57c689498f20a,
+    type: 3}
+--- !u!114 &673090304392706329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4838378340014137912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aff31bac984c40fa91c5c483bac9bdd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orderEntryContent: {fileID: 7553333416543595317, guid: f54c0af2a4c192948af0640344e37d15,
     type: 3}

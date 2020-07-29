@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
-// using Newtonsoft.Json;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -33,7 +32,7 @@ namespace DefaultNamespace
 
         public void OrderNumberClicked()
         {
-            Instantiate(orderDetailsCanvas, OrderManager.pms.transform);
+            Instantiate(orderDetailsCanvas, OrderManager.PrintManagementSystem.transform);
             SetFilePaths();
             SetData(_basketPath);
             DisplayArtworkThumbnail();
@@ -85,9 +84,7 @@ namespace DefaultNamespace
             for (int i = 0; i < allPrintThumbnailFiles.Length; i++)
             {
                 if (allPrintThumbnailFiles[i].Contains(orderUniqueCode))
-                {
                     _printThumbnailPath = allPrintThumbnailFiles[i];
-                }
             }
             
             // Debug.LogError("MetaPath: " + _metaPath);

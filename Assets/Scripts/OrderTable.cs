@@ -23,7 +23,7 @@ namespace DefaultNamespace
             var savedOrders = GetSavedOrders();
 
             _orderCatalogueEntryTransformList = new List<Transform>();
-            UpdateUI(savedOrders, _orderCatalogueEntryTransformList);
+            UpdateUi(savedOrders, _orderCatalogueEntryTransformList);
 
             SaveOrders(savedOrders);
         }
@@ -32,13 +32,13 @@ namespace DefaultNamespace
         {
             // if unique code has changed, new order has arrived
             // if unique code is the same, new order will not be added
-            if (OrderManager.currentOrder[0] == null || OrderManager.currentOrder[0] == _previousOrder[0]) 
+            if (OrderManager.CurrentOrder[0] == null || OrderManager.CurrentOrder[0] == _previousOrder[0]) 
                 return;
             
-            AddEntry(OrderManager.currentOrder[0], OrderManager.currentOrder[1], OrderManager.currentOrder[2], OrderManager.currentOrder[3], OrderManager.currentOrder[4], OrderManager.currentOrder[5]);
+            AddEntry(OrderManager.CurrentOrder[0], OrderManager.CurrentOrder[1], OrderManager.CurrentOrder[2], OrderManager.CurrentOrder[3], OrderManager.CurrentOrder[4], OrderManager.CurrentOrder[5]);
             for (int i = 0; i < _previousOrder.Length; i++)
             {
-                _previousOrder[i] = OrderManager.currentOrder[i];
+                _previousOrder[i] = OrderManager.CurrentOrder[i];
             }
         }
 
@@ -68,11 +68,11 @@ namespace DefaultNamespace
             }
             
             _orderCatalogueEntryTransformList = new List<Transform>();
-            UpdateUI(savedOrders, _orderCatalogueEntryTransformList);
+            UpdateUi(savedOrders, _orderCatalogueEntryTransformList);
             SaveOrders(savedOrders);
         }
 
-        private void UpdateUI(OrderTableSaveData savedOrders, List<Transform> transformList)
+        private void UpdateUi(OrderTableSaveData savedOrders, List<Transform> transformList)
         {
             foreach (Transform child in orderHolderTransform)
             {
@@ -88,13 +88,13 @@ namespace DefaultNamespace
                 entryRectTransform.anchoredPosition = new Vector2(0,-templateHeight * transformList.Count);
                 entryObject.gameObject.SetActive(true);
                 
-                SetDropdownOption(entry.currentStatus, entryObject.transform);
+                SetStatusDropdownOption(entry.currentStatus, entryObject.transform);
                 
                 transformList.Add(entryObject.transform);
             }
         }
 
-        private void SetDropdownOption(string currentStatus, Transform entryTransform)
+        private void SetStatusDropdownOption(string currentStatus, Transform entryTransform)
         {
             var dropdown = entryTransform.GetChild(5).gameObject;
             var val = 0;

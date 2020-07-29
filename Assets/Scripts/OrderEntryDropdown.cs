@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using TMPro;
 using TMPro.EditorUtilities;
 using UnityEngine;
@@ -8,11 +9,11 @@ namespace DefaultNamespace
 {
     public class OrderEntryDropdown : MonoBehaviour
     {
-        private string uniqueCode;
+        private string _uniqueCode;
         private void Start()
         {
             var orderEntry = transform.parent.gameObject;
-            uniqueCode = orderEntry.GetComponent<OrderEntryUI>().entryUniqueCode.text;
+            _uniqueCode = orderEntry.GetComponent<OrderEntryUI>().entryUniqueCode.text;
         }
 
         public void OnStatusChanged(int val)
@@ -20,34 +21,33 @@ namespace DefaultNamespace
             switch (val)
             {
                 case 0:            // New
-                    SetCurrentStatusInJson("New");
+                    SetEntryStatus("New");
                     break;
                 case 1:            // In Prog
-                    SetCurrentStatusInJson("In Progress");
+                    SetEntryStatus("In Progress");
                     break;
                 case 2:            // Print Q 1
-                    SetCurrentStatusInJson("Print Queue 1");
+                    SetEntryStatus("Print Queue 1");
                     break;
                 case 3:            // Collection
-                    SetCurrentStatusInJson("Collection");
+                    SetEntryStatus("Collection");
                     break;
                 case 4:            // Trash
-                    SetCurrentStatusInJson("Trash");
+                    SetEntryStatus("Trash");
                     break;   
             }
         }
 
-        private void SetCurrentStatusInJson(string status)
+        private void SetEntryStatus(string status)
         {
             var savedOrders = OrderTable.GetSavedOrders();
-            var x = savedOrders.orderEntries;
-            foreach (var entry in x)
+            var orderEntries = savedOrders.orderEntries;
+            
+            foreach (var entry in orderEntries.Where(entry => _uniqueCode == entry.uniqueCode))
             {
-                if (uniqueCode == entry.uniqueCode)
-                {
-                    entry.currentStatus = status;
-                }
+                entry.currentStatus = status;
             }
+            
             OrderTable.SaveOrders(savedOrders);
         }
     }
