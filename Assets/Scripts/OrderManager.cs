@@ -62,7 +62,6 @@ namespace DefaultNamespace
             var customerName = doc.GetElementsByTagName("COLLECTION_NAME")[0].InnerText;
             var date = doc.GetElementsByTagName("TIMESTAMP")[0].InnerText;
             var metaData = doc.GetElementsByTagName("Item")[0].InnerText;
-            var status = "New";
             var basketFilePath = e.FullPath;
 
             date = date.Remove(10, 13);
@@ -72,8 +71,8 @@ namespace DefaultNamespace
             orderInfo[1] = customerName;
             orderInfo[2] = date;
             orderInfo[3] = metaData;
-            orderInfo[4] = status;
-            orderInfo[5] = basketFilePath;
+            orderInfo[4] = basketFilePath;
+            orderInfo[5] = "New";
                 
             return orderInfo;
         }

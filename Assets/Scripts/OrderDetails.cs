@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace DefaultNamespace
 {
@@ -18,39 +19,54 @@ namespace DefaultNamespace
         
         private GameObject _pmsMainCanvas;
 
-        private string _metaPath = "";
-        private string _basketPath = "";
-        private string _printThumbnailPath = "";
-
+        private static string _metaPath = "";
+        private static string _basketPath = "";
+        private static string _printThumbnailPath = "";
+        
         public const string SavesPath = @"C:\YR\Saves\";
 
         private void Start()
         {
             _pmsMainCanvas = GameObject.Find("PMSMainCanvas");
+            SetFilePaths();
         }
 
         public void OrderNumberClicked()
         {
+            Instantiate(orderDetailsCanvas, OrderManager.pms.transform);
             SetFilePaths();
-            InstantiateMetaData();
-
+            SetData(_basketPath);
+            DisplayArtworkThumbnail();
+            
             _pmsMainCanvas.SetActive(false);
         }
 
-        private void InstantiateMetaData()
+        public void DisplayMetaInfo()
         {
-            var metaData = ExtractXmlData(_metaPath);
+            SetData(_metaPath);
+        }
 
-            Instantiate(orderDetailsCanvas, OrderManager.pms.transform);
-            var metaDataDisplay = transform.Find("/PrintManagementSystem/OrderDetailsCanvas(Clone)/OrderData/AllMeta").gameObject;
+        public void DisplayBasketInfo()
+        {
+            SetData(_basketPath);
+        }
+
+        private void DisplayArtworkThumbnail()
+        {
+            var artworkDisplay = transform.Find("/PrintManagementSystem/OrderDetailsCanvas(Clone)/ArtworkPrintOptions/ArtworkThumbnail").gameObject;
+            var sprite = SpriteCreator.LoadNewSprite(_printThumbnailPath);
+            artworkDisplay.GetComponent<Image>().sprite = sprite;
+        }
+        
+        private void SetData(string filePath)        // Needs updating to handle multiple meta files
+        {
+            var dataMap = ExtractXmlData(filePath);
+
+            var dataDisplay = transform.Find("/PrintManagementSystem/OrderDetailsCanvas(Clone)/OrderInformationOptions/OrderData/OrderInformation").gameObject;
             
-            var metaUi = "";
-            foreach (var pair in metaData)
-            { 
-                metaUi += $"{pair.Key}: {pair.Value}" + System.Environment.NewLine;
-            }
-            
-            metaDataDisplay.GetComponent<TextMeshProUGUI>().text = metaUi;
+            var dataString = dataMap.Aggregate("", (current, pair) => current + ($"{pair.Key}: {pair.Value}" + System.Environment.NewLine));
+
+            dataDisplay.GetComponent<TextMeshProUGUI>().text = dataString;
         }
 
         private void SetFilePaths()
@@ -74,9 +90,9 @@ namespace DefaultNamespace
                 }
             }
             
-            Debug.LogError("MetaPath: " + _metaPath);
-            Debug.LogError("BasketPath: " + _basketPath);
-            Debug.LogError("PrintPath: " + _printThumbnailPath);
+            // Debug.LogError("MetaPath: " + _metaPath);
+            // Debug.LogError("BasketPath: " + _basketPath);
+            // Debug.LogError("PrintPath: " + _printThumbnailPath);
         }
 
         private Dictionary<string,string> ExtractXmlData(string xmlDocPath)
@@ -84,11 +100,7 @@ namespace DefaultNamespace
             var doc = XDocument.Load(xmlDocPath);
             var x = doc.Descendants();
 
-            var map = new Dictionary<string,string>();
-            foreach (var element in x)
-            {
-                map.Add(element.Name.ToString(), element.Value);
-            }
+            var map = x.ToDictionary(element => element.Name.ToString(), element => element.Value);
 
             map.Remove(map.ElementAt(0).Key);
 

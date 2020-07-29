@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 
 namespace DefaultNamespace
@@ -41,7 +42,7 @@ namespace DefaultNamespace
             }
         }
 
-        private void AddEntry(string uniqueCode, string customerName, string date, string metaFile, string status, string basketPath)
+        private void AddEntry(string uniqueCode, string customerName, string date, string metaFile, string basketPath, string status)
         {
             AddEntry(new OrderEntry()
             {
@@ -49,8 +50,8 @@ namespace DefaultNamespace
                 customerName = customerName,
                 date = date,
                 metaData = metaFile,
-                status = status,
-                basketDataPath = basketPath
+                basketDataPath = basketPath,
+                currentStatus = status
             });
         }
 
@@ -87,11 +88,36 @@ namespace DefaultNamespace
                 entryRectTransform.anchoredPosition = new Vector2(0,-templateHeight * transformList.Count);
                 entryObject.gameObject.SetActive(true);
                 
+                SetDropdownOption(entry.currentStatus, entryObject.transform);
+                
                 transformList.Add(entryObject.transform);
             }
         }
 
-        private OrderTableSaveData GetSavedOrders()
+        private void SetDropdownOption(string currentStatus, Transform entryTransform)
+        {
+            var dropdown = entryTransform.GetChild(5).gameObject;
+            var val = 0;
+            switch (currentStatus)
+            {
+                case "In Progress":
+                    val = 1;
+                    break;
+                case "Print Queue 1":
+                    val = 2;
+                    break;
+                case "Collection":
+                    val = 3;
+                    break;
+                case "Trash":
+                    val = 4;
+                    break;
+            }
+
+            dropdown.GetComponent<TMP_Dropdown>().value = val;
+        }
+
+        public static OrderTableSaveData GetSavedOrders()
         {
             if (!File.Exists(JsonTablePath))
             {
@@ -108,7 +134,7 @@ namespace DefaultNamespace
             }
         }
 
-        private void SaveOrders(OrderTableSaveData orderTableSaveData)
+        public static void SaveOrders(OrderTableSaveData orderTableSaveData)
         {
             using (StreamWriter stream = new StreamWriter(JsonTablePath))
             {
