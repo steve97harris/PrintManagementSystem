@@ -70,7 +70,7 @@ namespace DefaultNamespace
 
         private void SetFilePaths()
         {
-            _basketPath = orderEntry.GetComponent<OrderEntryUI>().basketDataPath;
+            _basketPath = orderEntry.GetComponent<OrderEntryUI>().entryBasketDataPath;
 
             var orderUniqueCode = orderEntry.GetComponent<OrderEntryUI>().entryUniqueCode.text;
             var orderMetaFileName = orderEntry.GetComponent<OrderEntryUI>().entryMetaData.text;

@@ -10,7 +10,8 @@ namespace DefaultNamespace
         [SerializeField] public TextMeshProUGUI entryDate = null;
         [SerializeField] public TextMeshProUGUI entryMetaData = null;
         [SerializeField] public TextMeshProUGUI entryCustomerName = null;
-        [SerializeField] public string basketDataPath = null;
+        [SerializeField] public string entryBasketDataPath = null;
+        [SerializeField] public string entryStatus;
 
         public void Initialise(OrderEntry orderEntry)
         {
@@ -18,7 +19,8 @@ namespace DefaultNamespace
             entryDate.text = orderEntry.date;
             entryMetaData.text = orderEntry.metaData;
             entryCustomerName.text = orderEntry.customerName;
-            basketDataPath = orderEntry.basketDataPath;
+            entryBasketDataPath = orderEntry.basketDataPath;
+            entryStatus = orderEntry.currentStatus;
         }
     }
 }

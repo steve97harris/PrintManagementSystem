@@ -323,6 +323,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3876295879269906986, guid: f6a70f82abdb35a42baefa53cdfed103,
+        type: 3}
+      propertyPath: m_Size
+      value: 0.99999124
+      objectReference: {fileID: 0}
     - target: {fileID: 3876295879269906987, guid: f6a70f82abdb35a42baefa53cdfed103,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -356,12 +361,12 @@ PrefabInstance:
     - target: {fileID: 3876295880608992307, guid: f6a70f82abdb35a42baefa53cdfed103,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.000061035156
+      value: 0.00012207031
       objectReference: {fileID: 0}
     - target: {fileID: 3876295880608992307, guid: f6a70f82abdb35a42baefa53cdfed103,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000024542212
+      value: -0.0000043087693
       objectReference: {fileID: 0}
     - target: {fileID: 3876295880635854057, guid: f6a70f82abdb35a42baefa53cdfed103,
         type: 3}
@@ -478,11 +483,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: Status
       objectReference: {fileID: 0}
+    - target: {fileID: 6222362618297869192, guid: f6a70f82abdb35a42baefa53cdfed103,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f6a70f82abdb35a42baefa53cdfed103, type: 3}
 --- !u!224 &1738546948821683534 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3876295880635854057, guid: f6a70f82abdb35a42baefa53cdfed103,
+    type: 3}
+  m_PrefabInstance: {fileID: 3308968896425828775}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1738546948795100563 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3876295880608992308, guid: f6a70f82abdb35a42baefa53cdfed103,
     type: 3}
   m_PrefabInstance: {fileID: 3308968896425828775}
   m_PrefabAsset: {fileID: 0}
@@ -503,8 +519,7 @@ PrefabInstance:
         type: 3}
       propertyPath: orderEntryContent
       value: 
-      objectReference: {fileID: 7553333416543595317, guid: f54c0af2a4c192948af0640344e37d15,
-        type: 3}
+      objectReference: {fileID: 1738546948795100563}
     - target: {fileID: 4838378340014137912, guid: 38e5385b11fa5b742ad75f997bf6dc4e,
         type: 3}
       propertyPath: m_Name
