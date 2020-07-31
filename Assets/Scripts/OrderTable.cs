@@ -9,7 +9,7 @@ namespace DefaultNamespace
     public class OrderTable : MonoBehaviour
     {
         [SerializeField] private int maxNumberOfEntries = 1000;
-        [SerializeField] private Transform orderHolderTransform = null;
+        private Transform orderHolderTransform = null;
         [SerializeField] private GameObject orderEntryObject = null;
         
         private List<Transform> _orderCatalogueEntryTransformList;
@@ -21,6 +21,8 @@ namespace DefaultNamespace
         private void Start()
         {
             var savedOrders = GetSavedOrders();
+            var orderEntryContentHolder = GameObjectFinder.FindObjectsByName("OrderEntryContent");
+            orderHolderTransform = orderEntryContentHolder[0].transform;
 
             _orderCatalogueEntryTransformList = new List<Transform>();
             UpdateUi(savedOrders, _orderCatalogueEntryTransformList);

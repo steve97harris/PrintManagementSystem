@@ -65,6 +65,11 @@ namespace DefaultNamespace
 
             date = date.Remove(10, 13);
             
+            var day = date.Substring(8, 2);
+            var month = date.Substring(5, 2);
+            var year = date.Substring(0, 4);
+            date = day + "-" + month + "-" + year;
+            
             var orderInfo = new string[6];
             orderInfo[0] = uniqueCode;
             orderInfo[1] = customerName;

@@ -21,31 +21,33 @@ namespace DefaultNamespace
             switch (val)
             {
                 case 0:            // New
-                    SetEntryStatus("New");
+                    SetEntryStatusChange("New");
                     break;
                 case 1:            // In Prog
-                    SetEntryStatus("In Progress");
+                    SetEntryStatusChange("In Progress");
                     break;
                 case 2:            // Print Q 1
-                    SetEntryStatus("Print Queue 1");
+                    SetEntryStatusChange("Print Queue 1");
                     break;
                 case 3:            // Collection
-                    SetEntryStatus("Collection");
+                    SetEntryStatusChange("Collection");
                     break;
                 case 4:            // Trash
-                    SetEntryStatus("Trash");
+                    SetEntryStatusChange("Trash");
                     break;   
             }
         }
 
-        private void SetEntryStatus(string status)
+        private void SetEntryStatusChange(string status)
         {
             var savedOrders = OrderTable.GetSavedOrders();
             var orderEntries = savedOrders.orderEntries;
+            var orderEntryObject = transform.parent.gameObject;
             
             foreach (var entry in orderEntries.Where(entry => _uniqueCode == entry.uniqueCode))
             {
                 entry.currentStatus = status;
+                orderEntryObject.GetComponent<OrderEntryUI>().entryStatus = status;
             }
             
             OrderTable.SaveOrders(savedOrders);
