@@ -35,14 +35,12 @@ namespace DefaultNamespace
             var fileData = File.ReadAllBytes(filePath);
             var tex2d = new Texture2D(2,2);
 
-            if (!tex2d.LoadImage(fileData))
-            {
-                Debug.LogError("Texture returned null");
-                return null;
-            }
+            if (tex2d.LoadImage(fileData)) 
+                return tex2d;
             
-            Debug.Log("Texture loaded correctly");
-            return tex2d;
+            Debug.LogError("Texture returned null");
+            return null;
+
         }
     }
 }

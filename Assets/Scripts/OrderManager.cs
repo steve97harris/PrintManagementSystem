@@ -21,6 +21,8 @@ namespace DefaultNamespace
             Watcher();
         }
 
+        #region Watcher Functions
+
         private void Watcher()
         {
             var basketPath = OrderDetails.SavesPath + @"\Basket";
@@ -44,42 +46,17 @@ namespace DefaultNamespace
         {
             Debug.LogError("File Created: " + e.Name + ", Path: " + e.FullPath);
                 
-            var orderBasicInfo = ReadBasicXmlInfo(e);
+            var orderBasicInfo = XmlReader.GetPrimaryXmlInfo(e);
                 
             for (int i = 0; i < orderBasicInfo.Length; i++)
             {
                 CurrentOrder[i] = orderBasicInfo[i];
             }
         }
+
+        #endregion
         
-        private string[] ReadBasicXmlInfo(FileSystemEventArgs e)
-        {
-            var doc = new XmlDocument();
-            doc.Load(e.FullPath);
-
-            var uniqueCode = doc.GetElementsByTagName("UNIQUE_CODE")[0].InnerText;
-            var customerName = doc.GetElementsByTagName("COLLECTION_NAME")[0].InnerText;
-            var date = doc.GetElementsByTagName("TIMESTAMP")[0].InnerText;
-            var metaData = doc.GetElementsByTagName("Item")[0].InnerText;
-            var basketFilePath = e.FullPath;
-
-            date = date.Remove(10, 13);
-            
-            var day = date.Substring(8, 2);
-            var month = date.Substring(5, 2);
-            var year = date.Substring(0, 4);
-            date = day + "-" + month + "-" + year;
-            
-            var orderInfo = new string[6];
-            orderInfo[0] = uniqueCode;
-            orderInfo[1] = customerName;
-            orderInfo[2] = date;
-            orderInfo[3] = metaData;
-            orderInfo[4] = basketFilePath;
-            orderInfo[5] = "New";
-                
-            return orderInfo;
-        }
+        #region Buttons
 
         public void BackToHomeScreen()
         {
@@ -89,5 +66,7 @@ namespace DefaultNamespace
             homeScreenCanvas.SetActive(true);
             Destroy(orderDetailsCanvas);
         }
+
+        #endregion
     }
 }

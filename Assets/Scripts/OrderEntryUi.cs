@@ -4,7 +4,7 @@ using UnityEngine.Serialization;
 
 namespace DefaultNamespace
 {
-    public class OrderEntryUI : MonoBehaviour
+    public class OrderEntryUi : MonoBehaviour
     {
         [SerializeField] public TextMeshProUGUI entryUniqueCode = null;
         [SerializeField] public TextMeshProUGUI entryDate = null;
@@ -13,7 +13,7 @@ namespace DefaultNamespace
         [SerializeField] public string entryBasketDataPath = null;
         [SerializeField] public string entryStatus;
 
-        public void Initialise(OrderEntry orderEntry)
+        public void InitialiseOrderEntry(OrderEntry orderEntry)
         {
             entryUniqueCode.text = orderEntry.uniqueCode;
             entryDate.text = orderEntry.date;

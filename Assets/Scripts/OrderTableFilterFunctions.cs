@@ -7,60 +7,36 @@ namespace DefaultNamespace
 {
     public class OrderTableFilterFunctions : MonoBehaviour
     {
-        private List<OrderEntry> GetOrderEntries()
-        {
-            var savedOrders = OrderTable.GetSavedOrders();
-            var orderEntries = savedOrders.orderEntries;
-            return orderEntries;
-        }
-        
+        #region Buttons
+
         public void AllOrdersClicked()
         {
-            DisplaySpecifiedOrders("All");
+            FilterOrdersByStatus("All");
         }
 
         public void NewOrdersClicked()
         {
-            DisplaySpecifiedOrders("New");
+            FilterOrdersByStatus("New");
         }
         
         public void InProgressOrdersClicked()
         {
-            DisplaySpecifiedOrders("In Progress");
+            FilterOrdersByStatus("In Progress");
         }
         
         public void PrintQueue1OrdersClicked()
         {
-            DisplaySpecifiedOrders("Print Queue 1");
+            FilterOrdersByStatus("Print Queue 1");
         }
         
         public void CollectionOrdersClicked()
         {
-            DisplaySpecifiedOrders("Collection");
+            FilterOrdersByStatus("Collection");
         }
         
         public void TrashOrdersClicked()
         {
-            DisplaySpecifiedOrders("Trash");
-        }
-
-        private void DisplaySpecifiedOrders(string status)
-        {
-            var orderEntryObjects = GameObjectFinder.FindObjectsByName("OrderEntry(Clone)");
-
-            if (status == "All")
-            {
-                foreach (var entryObject in orderEntryObjects)
-                {
-                    entryObject.SetActive(true);
-                }
-                return;
-            }
-            
-            for (int i = 0; i < orderEntryObjects.Length; i++)
-            {
-                orderEntryObjects[i].SetActive(orderEntryObjects[i].GetComponent<OrderEntryUI>().entryStatus == status);
-            }
+            FilterOrdersByStatus("Trash");
         }
 
         public void ReorderByDate()
@@ -102,7 +78,30 @@ namespace DefaultNamespace
                 }
             }
         }
+        
+        #endregion
 
+        #region Button Helper Functions
+
+        private void FilterOrdersByStatus(string status)
+        {
+            var orderEntryObjects = GameObjectFinder.FindObjectsByName("OrderEntry(Clone)");
+
+            if (status == "All")
+            {
+                foreach (var entryObject in orderEntryObjects)
+                {
+                    entryObject.SetActive(true);
+                }
+                return;
+            }
+            
+            for (int i = 0; i < orderEntryObjects.Length; i++)
+            {
+                orderEntryObjects[i].SetActive(orderEntryObjects[i].GetComponent<OrderEntryUi>().entryStatus == status);
+            }
+        }
+        
         private void SwapTransformPositions(GameObject object01, GameObject object02)
         {
             var temp = object01.transform.position;
@@ -112,23 +111,25 @@ namespace DefaultNamespace
 
         private int GetYear(GameObject objectA)
         {
-            var year = objectA.GetComponent<OrderEntryUI>().entryDate.text.Substring(6,4);
+            var year = objectA.GetComponent<OrderEntryUi>().entryDate.text.Substring(6,4);
             int.TryParse(year, out var res);
             return res;
         }
         
         private int GetMonth(GameObject objectA)
         {
-            var month = objectA.GetComponent<OrderEntryUI>().entryDate.text.Substring(3,2);
+            var month = objectA.GetComponent<OrderEntryUi>().entryDate.text.Substring(3,2);
             int.TryParse(month, out var res);
             return res;
         }
         
         private int GetDay(GameObject objectA)
         {
-            var day = objectA.GetComponent<OrderEntryUI>().entryDate.text.Substring(0,2);
+            var day = objectA.GetComponent<OrderEntryUi>().entryDate.text.Substring(0,2);
             int.TryParse(day, out var res);
             return res;
         }
+
+        #endregion
     }
 }

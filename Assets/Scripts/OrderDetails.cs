@@ -21,22 +21,59 @@ namespace DefaultNamespace
         private static string _metaPath = "";
         private static string _basketPath = "";
         private static int _currentPrintIndex = 0;
-        private static List<string> _printThumbnailPathsPerOrder = new List<string>();
+        private static readonly List<string> PrintThumbnailPathsPerOrder = new List<string>();
 
         public const string SavesPath = @"C:\YR\Saves\";
 
         private void Start()
         {
             _pmsMainCanvas = GameObject.Find("PMSMainCanvas");
-            SetFilePaths();
+            GetFilePaths();
         }
+
+        #region File Path Functions
+
+        private void GetFilePaths()
+        {
+            _basketPath = orderEntry.GetComponent<OrderEntryUi>().entryBasketDataPath;
+
+            var orderUniqueCode = orderEntry.GetComponent<OrderEntryUi>().entryUniqueCode.text;
+            var orderMetaFileName = orderEntry.GetComponent<OrderEntryUi>().entryMetaData.text;
+            
+            var basicMetaPath = SavesPath + @"Meta\";
+            _metaPath = basicMetaPath + orderMetaFileName;
+            
+            var basicPrintThumbnailPath = SavesPath + "Print";
+            var printThumbnailFiles = Directory.GetFiles(basicPrintThumbnailPath);
+            
+            for (int i = 0; i < printThumbnailFiles.Length; i++)
+            {
+                if (!printThumbnailFiles[i].Contains(orderUniqueCode)) 
+                    continue;
+                
+                if (!PrintThumbnailPathsPerOrder.Contains(printThumbnailFiles[i]))
+                    PrintThumbnailPathsPerOrder.Add(printThumbnailFiles[i]);
+            }
+
+            // Debug.LogError("MetaPath: " + _metaPath);
+            // Debug.LogError("BasketPath: " + _basketPath);
+            // Debug.LogError("PrintPath: " + _printThumbnailPath);
+        }
+
+        #endregion
+
+        #region Buttons
 
         public void OrderNumberClicked()
         {
+            PrintThumbnailPathsPerOrder.Clear();
+            
             Instantiate(orderDetailsCanvas, OrderManager.PrintManagementSystem.transform);
-            SetFilePaths();
+            GetFilePaths();
             SetData(_basketPath);
-            DisplayArtworkThumbnail(_currentPrintIndex);
+    
+            if (PrintThumbnailPathsPerOrder.Count != 0)
+                SetArtworkThumbnail(_currentPrintIndex);
             
             _pmsMainCanvas.SetActive(false);
         }
@@ -53,34 +90,37 @@ namespace DefaultNamespace
 
         public void ArtworkButtonRight()
         {
-            if (_currentPrintIndex > _printThumbnailPathsPerOrder.Count)
-                return;
-            
             _currentPrintIndex++;
-            DisplayArtworkThumbnail(_currentPrintIndex);
-            Debug.LogError(_currentPrintIndex);
+
+            if (_currentPrintIndex > PrintThumbnailPathsPerOrder.Count - 1)
+            {
+                _currentPrintIndex = PrintThumbnailPathsPerOrder.Count - 1;
+                return;
+            }
+            
+            SetArtworkThumbnail(_currentPrintIndex);
         }
 
         public void ArtworkButtonLeft()
         {
-            if (_currentPrintIndex < 0)
-                return;
-            
             _currentPrintIndex--;
-            DisplayArtworkThumbnail(_currentPrintIndex);
-            Debug.LogError(_currentPrintIndex);
+
+            if (_currentPrintIndex < 0)
+            {
+                _currentPrintIndex = 0;
+                return;
+            }
+
+            SetArtworkThumbnail(_currentPrintIndex);
         }
-        
-        private void DisplayArtworkThumbnail(int printIndex)
-        {
-            var artworkDisplay = transform.Find("/PrintManagementSystem/OrderDetailsCanvas(Clone)/ArtworkPrintOptions/ArtworkThumbnail").gameObject;
-            var sprite = SpriteCreator.LoadNewSprite(_printThumbnailPathsPerOrder[printIndex]);
-            artworkDisplay.GetComponent<Image>().sprite = sprite;
-        }
-        
+
+        #endregion
+
+        #region Implement Order Details
+
         private void SetData(string filePath)        // Needs updating to handle multiple meta files
         {
-            var dataMap = ExtractXmlData(filePath);
+            var dataMap = XmlReader.ExtractXmlData(filePath);
 
             var dataDisplay = transform.Find("/PrintManagementSystem/OrderDetailsCanvas(Clone)/OrderInformationOptions/OrderData/OrderInformation").gameObject;
             
@@ -89,42 +129,14 @@ namespace DefaultNamespace
             dataDisplay.GetComponent<TextMeshProUGUI>().text = dataString;
         }
 
-        private void SetFilePaths()
+        private void SetArtworkThumbnail(int printIndex)
         {
-            _basketPath = orderEntry.GetComponent<OrderEntryUI>().entryBasketDataPath;
-
-            var orderUniqueCode = orderEntry.GetComponent<OrderEntryUI>().entryUniqueCode.text;
-            var orderMetaFileName = orderEntry.GetComponent<OrderEntryUI>().entryMetaData.text;
-            
-            var basicMetaPath = SavesPath + @"Meta\";
-            _metaPath = basicMetaPath + orderMetaFileName;
-            
-            var basicPrintThumbnailPath = SavesPath + "Print";
-            var printThumbnailFiles = Directory.GetFiles(basicPrintThumbnailPath);
-            
-            for (int i = 0; i < printThumbnailFiles.Length; i++)
-            {
-                if (printThumbnailFiles[i].Contains(orderUniqueCode))
-                {
-                    _printThumbnailPathsPerOrder.Add(printThumbnailFiles[i]);
-                }
-            }
-
-            // Debug.LogError("MetaPath: " + _metaPath);
-            // Debug.LogError("BasketPath: " + _basketPath);
-            // Debug.LogError("PrintPath: " + _printThumbnailPath);
+            var artworkDisplay = transform.Find("/PrintManagementSystem/OrderDetailsCanvas(Clone)/ArtworkPrintOptions/ArtworkThumbnail").gameObject;
+            var sprite = SpriteCreator.LoadNewSprite(PrintThumbnailPathsPerOrder[printIndex]);
+            artworkDisplay.GetComponent<Image>().sprite = sprite;
         }
 
-        private Dictionary<string,string> ExtractXmlData(string xmlDocPath)
-        {
-            var doc = XDocument.Load(xmlDocPath);
-            var x = doc.Descendants();
+        #endregion
 
-            var map = x.ToDictionary(element => element.Name.ToString(), element => element.Value);
-
-            map.Remove(map.ElementAt(0).Key);
-
-            return map;
-        }
     }
 }

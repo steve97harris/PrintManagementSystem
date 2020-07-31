@@ -17,7 +17,9 @@ namespace DefaultNamespace
         private readonly string[] _previousOrder = new string[6];
 
         private static string JsonTablePath => $"{Application.persistentDataPath}/orderTable.json";
-        
+
+        #region Event Functions
+
         private void Start()
         {
             var savedOrders = GetSavedOrders();
@@ -37,16 +39,20 @@ namespace DefaultNamespace
             if (OrderManager.CurrentOrder[0] == null || OrderManager.CurrentOrder[0] == _previousOrder[0]) 
                 return;
             
-            AddEntry(OrderManager.CurrentOrder[0], OrderManager.CurrentOrder[1], OrderManager.CurrentOrder[2], OrderManager.CurrentOrder[3], OrderManager.CurrentOrder[4], OrderManager.CurrentOrder[5]);
+            SetOrderEntryInfo(OrderManager.CurrentOrder[0], OrderManager.CurrentOrder[1], OrderManager.CurrentOrder[2], OrderManager.CurrentOrder[3], OrderManager.CurrentOrder[4], OrderManager.CurrentOrder[5]);
             for (int i = 0; i < _previousOrder.Length; i++)
             {
                 _previousOrder[i] = OrderManager.CurrentOrder[i];
             }
         }
 
-        private void AddEntry(string uniqueCode, string customerName, string date, string metaFile, string basketPath, string status)
+        #endregion
+
+        #region New Order Entry Functions
+
+        private void SetOrderEntryInfo(string uniqueCode, string customerName, string date, string metaFile, string basketPath, string status)
         {
-            AddEntry(new OrderEntry()
+            AddOrderEntry(new OrderEntry()
             {
                 uniqueCode = uniqueCode,
                 customerName = customerName,
@@ -57,7 +63,7 @@ namespace DefaultNamespace
             });
         }
 
-        private void AddEntry(OrderEntry orderEntry)
+        private void AddOrderEntry(OrderEntry orderEntry)
         {
             var savedOrders = GetSavedOrders();
 
@@ -74,6 +80,10 @@ namespace DefaultNamespace
             SaveOrders(savedOrders);
         }
 
+        #endregion
+
+        #region UI Functions
+
         private void UpdateUi(OrderTableSaveData savedOrders, List<Transform> transformList)
         {
             foreach (Transform child in _orderHolderTransform)
@@ -85,7 +95,7 @@ namespace DefaultNamespace
             {
                 var templateHeight = 100f;
                 var entryObject = Instantiate(orderEntryObject, _orderHolderTransform);
-                entryObject.GetComponent<OrderEntryUI>().Initialise(entry);
+                entryObject.GetComponent<OrderEntryUi>().InitialiseOrderEntry(entry);
                 var entryRectTransform = entryObject.GetComponent<RectTransform>();
                 entryRectTransform.anchoredPosition = new Vector2(0,-templateHeight * transformList.Count);
                 entryObject.gameObject.SetActive(true);
@@ -119,6 +129,10 @@ namespace DefaultNamespace
             dropdown.GetComponent<TMP_Dropdown>().value = val;
         }
 
+        #endregion
+
+        #region Json Functions
+
         public static OrderTableSaveData GetSavedOrders()
         {
             if (!File.Exists(JsonTablePath))
@@ -144,5 +158,7 @@ namespace DefaultNamespace
                 stream.Write(json);
             }
         }
+
+        #endregion
     }
 }
