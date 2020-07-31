@@ -9,9 +9,9 @@ namespace DefaultNamespace
     public class OrderTable : MonoBehaviour
     {
         [SerializeField] private int maxNumberOfEntries = 1000;
-        private Transform orderHolderTransform = null;
         [SerializeField] private GameObject orderEntryObject = null;
-        
+        private Transform _orderHolderTransform = null;
+
         private List<Transform> _orderCatalogueEntryTransformList;
 
         private readonly string[] _previousOrder = new string[6];
@@ -22,7 +22,7 @@ namespace DefaultNamespace
         {
             var savedOrders = GetSavedOrders();
             var orderEntryContentHolder = GameObjectFinder.FindObjectsByName("OrderEntryContent");
-            orderHolderTransform = orderEntryContentHolder[0].transform;
+            _orderHolderTransform = orderEntryContentHolder[0].transform;
 
             _orderCatalogueEntryTransformList = new List<Transform>();
             UpdateUi(savedOrders, _orderCatalogueEntryTransformList);
@@ -76,7 +76,7 @@ namespace DefaultNamespace
 
         private void UpdateUi(OrderTableSaveData savedOrders, List<Transform> transformList)
         {
-            foreach (Transform child in orderHolderTransform)
+            foreach (Transform child in _orderHolderTransform)
             {
                 Destroy(child.gameObject);
             }
@@ -84,7 +84,7 @@ namespace DefaultNamespace
             foreach (var entry in savedOrders.orderEntries)
             {
                 var templateHeight = 100f;
-                var entryObject = Instantiate(orderEntryObject, orderHolderTransform);
+                var entryObject = Instantiate(orderEntryObject, _orderHolderTransform);
                 entryObject.GetComponent<OrderEntryUI>().Initialise(entry);
                 var entryRectTransform = entryObject.GetComponent<RectTransform>();
                 entryRectTransform.anchoredPosition = new Vector2(0,-templateHeight * transformList.Count);

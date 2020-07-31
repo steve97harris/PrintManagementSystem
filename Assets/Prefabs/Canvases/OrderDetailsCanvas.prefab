@@ -192,7 +192,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6929705801458052082}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3821981759592051482, guid: 84ae3d3a66c0d724f9fc0a9e3d668f57,
+          type: 3}
+        m_MethodName: ArtworkButtonRight
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &366428382101939155
 GameObject:
   m_ObjectHideFlags: 0
@@ -5294,7 +5306,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6847363862751334119}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3821981759592051482, guid: 84ae3d3a66c0d724f9fc0a9e3d668f57,
+          type: 3}
+        m_MethodName: ArtworkButtonLeft
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &9088451708817962595
 GameObject:
   m_ObjectHideFlags: 0

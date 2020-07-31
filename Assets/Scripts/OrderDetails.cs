@@ -20,8 +20,9 @@ namespace DefaultNamespace
 
         private static string _metaPath = "";
         private static string _basketPath = "";
-        private static string _printThumbnailPath = "";
-        
+        private static int _currentPrintIndex = 0;
+        private static List<string> _printThumbnailPathsPerOrder = new List<string>();
+
         public const string SavesPath = @"C:\YR\Saves\";
 
         private void Start()
@@ -35,7 +36,7 @@ namespace DefaultNamespace
             Instantiate(orderDetailsCanvas, OrderManager.PrintManagementSystem.transform);
             SetFilePaths();
             SetData(_basketPath);
-            DisplayArtworkThumbnail();
+            DisplayArtworkThumbnail(_currentPrintIndex);
             
             _pmsMainCanvas.SetActive(false);
         }
@@ -50,10 +51,30 @@ namespace DefaultNamespace
             SetData(_basketPath);
         }
 
-        private void DisplayArtworkThumbnail()
+        public void ArtworkButtonRight()
+        {
+            if (_currentPrintIndex > _printThumbnailPathsPerOrder.Count)
+                return;
+            
+            _currentPrintIndex++;
+            DisplayArtworkThumbnail(_currentPrintIndex);
+            Debug.LogError(_currentPrintIndex);
+        }
+
+        public void ArtworkButtonLeft()
+        {
+            if (_currentPrintIndex < 0)
+                return;
+            
+            _currentPrintIndex--;
+            DisplayArtworkThumbnail(_currentPrintIndex);
+            Debug.LogError(_currentPrintIndex);
+        }
+        
+        private void DisplayArtworkThumbnail(int printIndex)
         {
             var artworkDisplay = transform.Find("/PrintManagementSystem/OrderDetailsCanvas(Clone)/ArtworkPrintOptions/ArtworkThumbnail").gameObject;
-            var sprite = SpriteCreator.LoadNewSprite(_printThumbnailPath);
+            var sprite = SpriteCreator.LoadNewSprite(_printThumbnailPathsPerOrder[printIndex]);
             artworkDisplay.GetComponent<Image>().sprite = sprite;
         }
         
@@ -79,14 +100,16 @@ namespace DefaultNamespace
             _metaPath = basicMetaPath + orderMetaFileName;
             
             var basicPrintThumbnailPath = SavesPath + "Print";
-            var allPrintThumbnailFiles = Directory.GetFiles(basicPrintThumbnailPath);
+            var printThumbnailFiles = Directory.GetFiles(basicPrintThumbnailPath);
             
-            for (int i = 0; i < allPrintThumbnailFiles.Length; i++)
+            for (int i = 0; i < printThumbnailFiles.Length; i++)
             {
-                if (allPrintThumbnailFiles[i].Contains(orderUniqueCode))
-                    _printThumbnailPath = allPrintThumbnailFiles[i];
+                if (printThumbnailFiles[i].Contains(orderUniqueCode))
+                {
+                    _printThumbnailPathsPerOrder.Add(printThumbnailFiles[i]);
+                }
             }
-            
+
             // Debug.LogError("MetaPath: " + _metaPath);
             // Debug.LogError("BasketPath: " + _basketPath);
             // Debug.LogError("PrintPath: " + _printThumbnailPath);
