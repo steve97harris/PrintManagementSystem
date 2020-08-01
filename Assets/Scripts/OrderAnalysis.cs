@@ -11,15 +11,17 @@ using UnityEngine.UI;
 
 namespace DefaultNamespace
 {
-    public class OrderDetails : MonoBehaviour
+    public class OrderAnalysis : MonoBehaviour
     {
         [SerializeField] private GameObject orderDetailsCanvas;
         [SerializeField] private GameObject orderEntry;
         
         private GameObject _pmsMainCanvas;
 
-        private static string _metaPath = "";
         private static string _basketPath = "";
+
+        private static int _currentMetaIndex = 0;
+        private static readonly List<string> MetaDataPaths = new List<string>();
         private static int _currentPrintIndex = 0;
         private static readonly List<string> PrintThumbnailPathsPerOrder = new List<string>();
 
@@ -38,10 +40,23 @@ namespace DefaultNamespace
             _basketPath = orderEntry.GetComponent<OrderEntryUi>().entryBasketDataPath;
 
             var orderUniqueCode = orderEntry.GetComponent<OrderEntryUi>().entryUniqueCode.text;
-            var orderMetaFileName = orderEntry.GetComponent<OrderEntryUi>().entryMetaData.text;
             
             var basicMetaPath = SavesPath + @"Meta\";
-            _metaPath = basicMetaPath + orderMetaFileName;
+            var metaDataFiles = Directory.GetFiles(basicMetaPath);
+            
+            for (int i = 0; i < metaDataFiles.Length; i++)
+            {
+                if (metaDataFiles[i].Contains(orderUniqueCode))
+                {
+                    if (!MetaDataPaths.Contains(metaDataFiles[i]))
+                        MetaDataPaths.Add(metaDataFiles[i]);
+                }
+            }
+
+            foreach (var sPath in MetaDataPaths)
+            {
+                Debug.LogError(sPath);
+            }
             
             var basicPrintThumbnailPath = SavesPath + "Print";
             var printThumbnailFiles = Directory.GetFiles(basicPrintThumbnailPath);
@@ -67,10 +82,16 @@ namespace DefaultNamespace
         public void OrderNumberClicked()
         {
             PrintThumbnailPathsPerOrder.Clear();
+            MetaDataPaths.Clear();
             
-            Instantiate(orderDetailsCanvas, OrderManager.PrintManagementSystem.transform);
+            Instantiate(orderDetailsCanvas, OrderWatcher.PrintManagementSystem.transform);
+            
+            Debug.LogError("-----------------------------");
             GetFilePaths();
-            SetData(_basketPath);
+            
+            SetBasketData(_basketPath);
+            
+            SetMetaData(MetaDataPaths[0]);
     
             if (PrintThumbnailPathsPerOrder.Count != 0)
                 SetArtworkThumbnail(_currentPrintIndex);
@@ -78,14 +99,31 @@ namespace DefaultNamespace
             _pmsMainCanvas.SetActive(false);
         }
 
-        public void DisplayMetaInfo()
+        public void MetaDataRightButton()
         {
-            SetData(_metaPath);
-        }
+            _currentMetaIndex++;
 
-        public void DisplayBasketInfo()
+            if (_currentMetaIndex > MetaDataPaths.Count - 1)
+            {
+                _currentMetaIndex = MetaDataPaths.Count - 1;
+                return;
+            }
+            
+            Debug.LogError("currentMetaPath: " + MetaDataPaths[_currentMetaIndex]);
+            SetMetaData(MetaDataPaths[_currentMetaIndex]);
+        }
+        
+        public void MetaDataLeftButton()
         {
-            SetData(_basketPath);
+            _currentMetaIndex--;
+
+            if (_currentMetaIndex < 0)
+            {
+                _currentMetaIndex = 0;
+                return;
+            }
+
+            SetMetaData(MetaDataPaths[_currentMetaIndex]);
         }
 
         public void ArtworkButtonRight()
@@ -118,11 +156,21 @@ namespace DefaultNamespace
 
         #region Implement Order Details
 
-        private void SetData(string filePath)        // Needs updating to handle multiple meta files
+        private void SetBasketData(string filePath)       
+        {
+            SetData(filePath, "/PrintManagementSystem/OrderDetailsCanvas(Clone)/OrderInformationOptions/OrderBasketData/BasketData");
+        }
+        
+        private void SetMetaData(string filePath)    
+        {
+            SetData(filePath, "/PrintManagementSystem/OrderDetailsCanvas(Clone)/OrderInformationOptions/OrderMetaData/MetaData");
+        }
+
+        private void SetData(string filePath, string gameObjectPath)
         {
             var dataMap = XmlReader.ExtractXmlData(filePath);
 
-            var dataDisplay = transform.Find("/PrintManagementSystem/OrderDetailsCanvas(Clone)/OrderInformationOptions/OrderData/OrderInformation").gameObject;
+            var dataDisplay = transform.Find(gameObjectPath).gameObject;
             
             var dataString = dataMap.Aggregate("", (current, pair) => current + ($"{pair.Key}: {pair.Value}" + System.Environment.NewLine));
 

@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace DefaultNamespace
 {
-    public class OrderManager : MonoBehaviour
+    public class OrderWatcher : MonoBehaviour
     {
         public static readonly string[] CurrentOrder = new string[6];
         public static GameObject PrintManagementSystem;
@@ -25,7 +25,7 @@ namespace DefaultNamespace
 
         private void Watcher()
         {
-            var basketPath = OrderDetails.SavesPath + @"\Basket";
+            var basketPath = OrderAnalysis.SavesPath + @"\Basket";
             var basketWatcher = new FileSystemWatcher
             {
                 Path = basketPath, 

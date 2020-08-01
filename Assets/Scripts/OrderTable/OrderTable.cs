@@ -36,13 +36,14 @@ namespace DefaultNamespace
         {
             // if unique code has changed, new order has arrived
             // if unique code is the same, new order will not be added
-            if (OrderManager.CurrentOrder[0] == null || OrderManager.CurrentOrder[0] == _previousOrder[0]) 
+            if (OrderWatcher.CurrentOrder[0] == null || OrderWatcher.CurrentOrder[0] == _previousOrder[0]) 
                 return;
-            
-            SetOrderEntryInfo(OrderManager.CurrentOrder[0], OrderManager.CurrentOrder[1], OrderManager.CurrentOrder[2], OrderManager.CurrentOrder[3], OrderManager.CurrentOrder[4], OrderManager.CurrentOrder[5]);
+
+            var currentOrderArray = OrderWatcher.CurrentOrder;
+            SetOrderEntryInfo(currentOrderArray[0], currentOrderArray[1], currentOrderArray[2], currentOrderArray[3], currentOrderArray[4], currentOrderArray[5]);
             for (int i = 0; i < _previousOrder.Length; i++)
             {
-                _previousOrder[i] = OrderManager.CurrentOrder[i];
+                _previousOrder[i] = OrderWatcher.CurrentOrder[i];
             }
         }
 
