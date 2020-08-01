@@ -34,8 +34,6 @@ namespace DefaultNamespace
 
         private void Update()
         {
-            // if unique code has changed, new order has arrived
-            // if unique code is the same, new order will not be added
             if (OrderWatcher.CurrentOrder[0] == null || OrderWatcher.CurrentOrder[0] == _previousOrder[0]) 
                 return;
 

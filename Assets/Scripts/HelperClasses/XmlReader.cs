@@ -14,7 +14,12 @@ namespace DefaultNamespace
             var doc = XDocument.Load(xmlDocPath);
             var docElements = doc.Descendants();
 
-            var map = docElements.ToDictionary(element => element.Name.ToString(), element => element.Value);
+            var map = new Dictionary<string, string>();
+            foreach (var element in docElements)
+            {
+                if (!map.ContainsKey(element.Name.ToString()))
+                    map.Add(element.Name.ToString(), element.Value);
+            }
 
             map.Remove(map.ElementAt(0).Key);
 

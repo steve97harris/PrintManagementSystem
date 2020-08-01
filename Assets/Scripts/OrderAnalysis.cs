@@ -18,7 +18,7 @@ namespace DefaultNamespace
         
         private GameObject _pmsMainCanvas;
 
-        private static string _basketPath = "";
+        private static string _basketDataPath = "";
 
         private static int _currentMetaIndex = 0;
         private static readonly List<string> MetaDataPaths = new List<string>();
@@ -37,42 +37,28 @@ namespace DefaultNamespace
 
         private void GetFilePaths()
         {
-            _basketPath = orderEntry.GetComponent<OrderEntryUi>().entryBasketDataPath;
+            _basketDataPath = orderEntry.GetComponent<OrderEntryUi>().entryBasketDataPath;
 
-            var orderUniqueCode = orderEntry.GetComponent<OrderEntryUi>().entryUniqueCode.text;
-            
             var basicMetaPath = SavesPath + @"Meta\";
-            var metaDataFiles = Directory.GetFiles(basicMetaPath);
-            
-            for (int i = 0; i < metaDataFiles.Length; i++)
-            {
-                if (metaDataFiles[i].Contains(orderUniqueCode))
-                {
-                    if (!MetaDataPaths.Contains(metaDataFiles[i]))
-                        MetaDataPaths.Add(metaDataFiles[i]);
-                }
-            }
+            SetFilePathArrays(basicMetaPath, MetaDataPaths);
 
-            foreach (var sPath in MetaDataPaths)
-            {
-                Debug.LogError(sPath);
-            }
-            
             var basicPrintThumbnailPath = SavesPath + "Print";
-            var printThumbnailFiles = Directory.GetFiles(basicPrintThumbnailPath);
+            SetFilePathArrays(basicPrintThumbnailPath, PrintThumbnailPathsPerOrder);
+        }
+
+        private void SetFilePathArrays(string basicPath, List<string> pathsArray)
+        {
+            var orderUniqueCode = orderEntry.GetComponent<OrderEntryUi>().entryUniqueCode.text;
+            var printThumbnailFiles = Directory.GetFiles(basicPath);
             
             for (int i = 0; i < printThumbnailFiles.Length; i++)
             {
                 if (!printThumbnailFiles[i].Contains(orderUniqueCode)) 
                     continue;
                 
-                if (!PrintThumbnailPathsPerOrder.Contains(printThumbnailFiles[i]))
-                    PrintThumbnailPathsPerOrder.Add(printThumbnailFiles[i]);
+                if (!pathsArray.Contains(printThumbnailFiles[i]))
+                    pathsArray.Add(printThumbnailFiles[i]);
             }
-
-            // Debug.LogError("MetaPath: " + _metaPath);
-            // Debug.LogError("BasketPath: " + _basketPath);
-            // Debug.LogError("PrintPath: " + _printThumbnailPath);
         }
 
         #endregion
@@ -81,75 +67,97 @@ namespace DefaultNamespace
 
         public void OrderNumberClicked()
         {
-            PrintThumbnailPathsPerOrder.Clear();
             MetaDataPaths.Clear();
+            PrintThumbnailPathsPerOrder.Clear();
             
             Instantiate(orderDetailsCanvas, OrderWatcher.PrintManagementSystem.transform);
             
-            Debug.LogError("-----------------------------");
             GetFilePaths();
             
-            SetBasketData(_basketPath);
-            
-            SetMetaData(MetaDataPaths[0]);
-    
+            SetBasketData(_basketDataPath);
+
+            if (MetaDataPaths.Count != 0)
+            {
+                SetMetaData(MetaDataPaths[0]);
+                SetItemNumberText(_currentMetaIndex, MetaDataPaths.Count, "MetaNumber");
+            }
+            else if (MetaDataPaths.Count == 0)
+            {
+                SetItemNumberText(-1,0,"MetaNumber");
+                SetInvalidMetaDataText("Meta file not found");
+            }
+
             if (PrintThumbnailPathsPerOrder.Count != 0)
+            {
                 SetArtworkThumbnail(_currentPrintIndex);
+                SetItemNumberText(_currentPrintIndex, PrintThumbnailPathsPerOrder.Count, "ArtworkNumber");
+            }
+            else if (PrintThumbnailPathsPerOrder.Count == 0)
+            {
+                DisplayInvalidPrintPathText();
+                SetItemNumberText(-1, 0, "ArtworkNumber");
+            }
             
             _pmsMainCanvas.SetActive(false);
         }
 
         public void MetaDataRightButton()
         {
-            _currentMetaIndex++;
-
-            if (_currentMetaIndex > MetaDataPaths.Count - 1)
-            {
-                _currentMetaIndex = MetaDataPaths.Count - 1;
-                return;
-            }
-            
-            Debug.LogError("currentMetaPath: " + MetaDataPaths[_currentMetaIndex]);
+            _currentMetaIndex = UpIndex(_currentMetaIndex, MetaDataPaths.Count);
             SetMetaData(MetaDataPaths[_currentMetaIndex]);
+            SetItemNumberText(_currentMetaIndex, MetaDataPaths.Count, "MetaNumber");
         }
         
         public void MetaDataLeftButton()
         {
-            _currentMetaIndex--;
-
-            if (_currentMetaIndex < 0)
-            {
-                _currentMetaIndex = 0;
-                return;
-            }
-
+            _currentMetaIndex = DownIndex(_currentMetaIndex);
             SetMetaData(MetaDataPaths[_currentMetaIndex]);
+            SetItemNumberText(_currentMetaIndex, MetaDataPaths.Count, "MetaNumber");
         }
 
         public void ArtworkButtonRight()
         {
-            _currentPrintIndex++;
-
-            if (_currentPrintIndex > PrintThumbnailPathsPerOrder.Count - 1)
-            {
-                _currentPrintIndex = PrintThumbnailPathsPerOrder.Count - 1;
-                return;
-            }
-            
+            _currentPrintIndex = UpIndex(_currentPrintIndex, PrintThumbnailPathsPerOrder.Count);
             SetArtworkThumbnail(_currentPrintIndex);
+            SetItemNumberText(_currentPrintIndex, PrintThumbnailPathsPerOrder.Count, "ArtworkNumber");
         }
 
         public void ArtworkButtonLeft()
         {
-            _currentPrintIndex--;
-
-            if (_currentPrintIndex < 0)
-            {
-                _currentPrintIndex = 0;
-                return;
-            }
-
+            _currentPrintIndex = DownIndex(_currentPrintIndex);
             SetArtworkThumbnail(_currentPrintIndex);
+            SetItemNumberText(_currentPrintIndex, PrintThumbnailPathsPerOrder.Count, "ArtworkNumber");
+        }
+
+        private int DownIndex(int index)
+        {
+            index--;
+
+            if (index >= 0) 
+                return index;
+            
+            index = 0;
+            return index;
+
+        }
+
+        private int UpIndex(int index, int arrayCount)
+        {
+            index++;
+
+            if (index <= arrayCount - 1) 
+                return index;
+            
+            index = arrayCount - 1;
+            return index;
+
+        }
+
+        private void SetItemNumberText(int index, int arrayCount, string objectName)
+        {
+            var artworkNumberObjects = GameObjectFinder.FindObjectsByName(objectName);
+            var artworkNumberObject = artworkNumberObjects[0];
+            artworkNumberObject.GetComponent<TMP_Text>().text = (index + 1) + "/" + arrayCount;
         }
 
         #endregion
@@ -158,20 +166,19 @@ namespace DefaultNamespace
 
         private void SetBasketData(string filePath)       
         {
-            SetData(filePath, "/PrintManagementSystem/OrderDetailsCanvas(Clone)/OrderInformationOptions/OrderBasketData/BasketData");
+            SetData(filePath, "BasketData");
         }
         
         private void SetMetaData(string filePath)    
         {
-            SetData(filePath, "/PrintManagementSystem/OrderDetailsCanvas(Clone)/OrderInformationOptions/OrderMetaData/MetaData");
+            SetData(filePath, "MetaData");
         }
 
-        private void SetData(string filePath, string gameObjectPath)
+        private void SetData(string filePath, string gameObjectName)
         {
             var dataMap = XmlReader.ExtractXmlData(filePath);
 
-            var dataDisplay = transform.Find(gameObjectPath).gameObject;
-            
+            var dataDisplay = GameObjectFinder.FindSingleObjectByName(gameObjectName);
             var dataString = dataMap.Aggregate("", (current, pair) => current + ($"{pair.Key}: {pair.Value}" + System.Environment.NewLine));
 
             dataDisplay.GetComponent<TextMeshProUGUI>().text = dataString;
@@ -179,9 +186,22 @@ namespace DefaultNamespace
 
         private void SetArtworkThumbnail(int printIndex)
         {
-            var artworkDisplay = transform.Find("/PrintManagementSystem/OrderDetailsCanvas(Clone)/ArtworkPrintOptions/ArtworkThumbnail").gameObject;
+            var artworkDisplay = GameObjectFinder.FindSingleObjectByName("ArtworkThumbnail");
             var sprite = SpriteCreator.LoadNewSprite(PrintThumbnailPathsPerOrder[printIndex]);
             artworkDisplay.GetComponent<Image>().sprite = sprite;
+        }
+
+        private void DisplayInvalidPrintPathText()
+        {
+            var invalidPrintPathTextObject = GameObjectFinder.FindSingleObjectByName("InvalidPrintPathText");
+            invalidPrintPathTextObject.SetActive(true);
+        }
+
+        private void SetInvalidMetaDataText(string text)
+        {
+            var metaText = GameObjectFinder.FindSingleObjectByName("MetaData");
+            metaText.GetComponent<TMP_Text>().text = text;
+            metaText.GetComponent<TMP_Text>().color = Color.red;
         }
 
         #endregion
