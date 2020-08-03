@@ -13,7 +13,7 @@ namespace DefaultNamespace
         private void Start()
         {
             var orderEntry = transform.parent.gameObject;
-            _uniqueCode = orderEntry.GetComponent<OrderEntryUi>().entryUniqueCode.text;
+            _uniqueCode = orderEntry.GetComponent<OrderEntryUniqueCode>().entryUniqueCode;
         }
 
         #region Buttons
@@ -22,19 +22,19 @@ namespace DefaultNamespace
         {
             switch (val)
             {
-                case 0:            // New
+                case 0:            
                     SetEntryStatusChange("New");
                     break;
-                case 1:            // In Prog
+                case 1:            
                     SetEntryStatusChange("In Progress");
                     break;
-                case 2:            // Print Q 1
+                case 2:            
                     SetEntryStatusChange("Print Queue 1");
                     break;
-                case 3:            // Collection
+                case 3:            
                     SetEntryStatusChange("Collection");
                     break;
-                case 4:            // Trash
+                case 4:            
                     SetEntryStatusChange("Trash");
                     break;   
             }
@@ -51,7 +51,7 @@ namespace DefaultNamespace
             foreach (var entry in orderEntries.Where(entry => _uniqueCode == entry.uniqueCode))
             {
                 entry.currentStatus = status;
-                orderEntryObject.GetComponent<OrderEntryUi>().entryStatus = status;
+                orderEntryObject.GetComponent<OrderEntryUniqueCode>().entryStatus = status;
             }
             
             OrderTable.SaveOrders(savedOrders);

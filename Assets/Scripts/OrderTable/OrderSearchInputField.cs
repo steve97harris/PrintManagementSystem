@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
 namespace DefaultNamespace
 {
@@ -10,7 +11,7 @@ namespace DefaultNamespace
 
             for (int i = 0; i < orderEntryObjects.Length; i++)
             {
-                var entryName = orderEntryObjects[i].GetComponent<OrderEntryUi>().entryCustomerName.text;
+                var entryName = orderEntryObjects[i].transform.GetChild(3).GetComponent<TMP_Text>().text;
 
                 if (!entryName.Contains(customerName))
                     orderEntryObjects[i].SetActive(false);

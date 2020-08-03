@@ -12,7 +12,7 @@ namespace DefaultNamespace
 {
     public class OrderWatcher : MonoBehaviour
     {
-        public static readonly string[] CurrentOrder = new string[6];
+        public static string CurrentOrderUniqueCode = "";
         public static GameObject PrintManagementSystem;
         
         void Start()
@@ -46,12 +46,8 @@ namespace DefaultNamespace
         {
             Debug.LogError("File Created: " + e.Name + ", Path: " + e.FullPath);
                 
-            var orderBasicInfo = XmlReader.GetPrimaryXmlInfo(e);
-                
-            for (int i = 0; i < orderBasicInfo.Length; i++)
-            {
-                CurrentOrder[i] = orderBasicInfo[i];
-            }
+            var orderUniqueCode = XmlReader.GetUniqueCode(e);
+            CurrentOrderUniqueCode = orderUniqueCode;
         }
 
         #endregion

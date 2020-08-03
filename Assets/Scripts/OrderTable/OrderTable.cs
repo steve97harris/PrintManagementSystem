@@ -14,7 +14,7 @@ namespace DefaultNamespace
 
         private List<Transform> _orderCatalogueEntryTransformList;
 
-        private readonly string[] _previousOrder = new string[6];
+        private string _previousOrder = "";
 
         private static string JsonTablePath => $"{Application.persistentDataPath}/orderTable.json";
 
@@ -34,31 +34,25 @@ namespace DefaultNamespace
 
         private void Update()
         {
-            if (OrderWatcher.CurrentOrder[0] == null || OrderWatcher.CurrentOrder[0] == _previousOrder[0]) 
+            if (OrderWatcher.CurrentOrderUniqueCode == "" || OrderWatcher.CurrentOrderUniqueCode == _previousOrder) 
                 return;
 
-            var currentOrderArray = OrderWatcher.CurrentOrder;
-            SetOrderEntryInfo(currentOrderArray[0], currentOrderArray[1], currentOrderArray[2], currentOrderArray[3], currentOrderArray[4], currentOrderArray[5]);
-            for (int i = 0; i < _previousOrder.Length; i++)
-            {
-                _previousOrder[i] = OrderWatcher.CurrentOrder[i];
-            }
+            var currentOrderArray = OrderWatcher.CurrentOrderUniqueCode;
+            SetOrderEntryInfo(currentOrderArray);
+
+            _previousOrder = OrderWatcher.CurrentOrderUniqueCode;
         }
 
         #endregion
 
         #region New Order Entry Functions
 
-        private void SetOrderEntryInfo(string uniqueCode, string customerName, string date, string metaFile, string basketPath, string status)
+        private void SetOrderEntryInfo(string uniqueCode)
         {
             AddOrderEntry(new OrderEntry()
             {
                 uniqueCode = uniqueCode,
-                customerName = customerName,
-                date = date,
-                metaData = metaFile,
-                basketDataPath = basketPath,
-                currentStatus = status
+                currentStatus = "New"
             });
         }
 
@@ -94,7 +88,7 @@ namespace DefaultNamespace
             {
                 var templateHeight = 100f;
                 var entryObject = Instantiate(orderEntryObject, _orderHolderTransform);
-                entryObject.GetComponent<OrderEntryUi>().InitialiseOrderEntry(entry);
+                entryObject.GetComponent<OrderEntryUniqueCode>().InitialiseOrderEntry(entry);
                 var entryRectTransform = entryObject.GetComponent<RectTransform>();
                 entryRectTransform.anchoredPosition = new Vector2(0,-templateHeight * transformList.Count);
                 entryObject.gameObject.SetActive(true);
@@ -107,7 +101,7 @@ namespace DefaultNamespace
 
         private void SetStatusDropdownOption(string currentStatus, Transform entryTransform)
         {
-            var dropdown = entryTransform.GetChild(5).gameObject;
+            var dropdown = entryTransform.GetChild(6).gameObject;
             var val = 0;
             switch (currentStatus)
             {

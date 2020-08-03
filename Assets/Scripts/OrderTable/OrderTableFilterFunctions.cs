@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 namespace DefaultNamespace
@@ -101,7 +102,7 @@ namespace DefaultNamespace
             
             for (int i = 0; i < orderEntryObjects.Length; i++)
             {
-                orderEntryObjects[i].SetActive(orderEntryObjects[i].GetComponent<OrderEntryUi>().entryStatus == status);
+                orderEntryObjects[i].SetActive(orderEntryObjects[i].GetComponent<OrderEntryUniqueCode>().entryStatus == status);
             }
         }
         
@@ -114,21 +115,21 @@ namespace DefaultNamespace
 
         private int GetYear(GameObject objectA)
         {
-            var year = objectA.GetComponent<OrderEntryUi>().entryDate.text.Substring(6,4);
+            var year = objectA.transform.GetChild(2).GetComponent<TMP_Text>().text.Substring(6,4);
             int.TryParse(year, out var res);
             return res;
         }
         
         private int GetMonth(GameObject objectA)
         {
-            var month = objectA.GetComponent<OrderEntryUi>().entryDate.text.Substring(3,2);
+            var month = objectA.transform.GetChild(2).GetComponent<TMP_Text>().text.Substring(3,2);
             int.TryParse(month, out var res);
             return res;
         }
         
         private int GetDay(GameObject objectA)
         {
-            var day = objectA.GetComponent<OrderEntryUi>().entryDate.text.Substring(0,2);
+            var day = objectA.transform.GetChild(2).GetComponent<TMP_Text>().text.Substring(0,2);
             int.TryParse(day, out var res);
             return res;
         }

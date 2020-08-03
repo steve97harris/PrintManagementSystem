@@ -8,10 +8,6 @@ namespace DefaultNamespace
     public class OrderEntry
     {
         public string uniqueCode;
-        public string date;
-        public string metaData;
-        public string customerName;
-        public string basketDataPath;
         public string currentStatus;
     }
 }
