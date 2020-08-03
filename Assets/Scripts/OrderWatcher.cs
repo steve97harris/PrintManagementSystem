@@ -25,7 +25,7 @@ namespace DefaultNamespace
 
         private void Watcher()
         {
-            var basketPath = OrderAnalysis.SavesPath + @"\Basket";
+            var basketPath = OrderAnalysis.SavesPath + @"Basket\";
             var basketWatcher = new FileSystemWatcher
             {
                 Path = basketPath, 

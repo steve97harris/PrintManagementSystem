@@ -141,7 +141,7 @@ namespace DefaultNamespace
 
         private void SetItemNumberText(int index, int arrayCount, string objectName)
         {
-            var artworkNumberObjects = GameObjectFinder.FindObjectsByName(objectName);
+            var artworkNumberObjects = GameObjectFinder.FindMultipleObjectsByName(objectName);
             var artworkNumberObject = artworkNumberObjects[0];
             artworkNumberObject.GetComponent<TMP_Text>().text = (index + 1) + "/" + arrayCount;
         }
@@ -170,7 +170,7 @@ namespace DefaultNamespace
             var day = date.Substring(8, 2);
             var month = date.Substring(5, 2);
             var year = date.Substring(0, 4);
-            date = day + "-" + month + "-" + year;
+            date = day + "/" + month + "/" + year;
             
             
             orderEntry.transform.GetChild(1).transform.GetChild(0).GetComponent<TMP_Text>().text = uniqueCode;
@@ -193,7 +193,7 @@ namespace DefaultNamespace
             var basicMetaPath = SavesPath + @"Meta\";
             SetFilePathArrays(basicMetaPath, MetaDataPaths, uniqueCode);
 
-            var basicPrintThumbnailPath = SavesPath + "Print";
+            var basicPrintThumbnailPath = SavesPath + @"Print\";
             SetFilePathArrays(basicPrintThumbnailPath, PrintThumbnailPathsPerOrder, uniqueCode);
         }
 

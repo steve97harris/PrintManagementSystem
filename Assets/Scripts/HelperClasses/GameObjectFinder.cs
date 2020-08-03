@@ -5,7 +5,7 @@ namespace DefaultNamespace
 {
     public class GameObjectFinder : MonoBehaviour
     {
-        public static GameObject[] FindObjectsByName(string objectName)
+        public static GameObject[] FindMultipleObjectsByName(string objectName)
         {
             var objects = Resources.FindObjectsOfTypeAll<GameObject>().Where(obj => obj.name == objectName).ToArray();
             return objects;

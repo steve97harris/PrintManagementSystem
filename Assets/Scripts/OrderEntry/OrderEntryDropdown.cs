@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using iTextSharp.text;
 using TMPro;
 using TMPro.EditorUtilities;
 using UnityEngine;
-using UnityEngine.UI;
+using Image = UnityEngine.UI.Image;
 
 namespace DefaultNamespace
 {
@@ -42,6 +44,8 @@ namespace DefaultNamespace
 
         #endregion
 
+        #region Private Methods
+
         private void SetEntryStatusChange(string status)
         {
             var savedOrders = OrderTable.GetSavedOrders();
@@ -56,5 +60,7 @@ namespace DefaultNamespace
             
             OrderTable.SaveOrders(savedOrders);
         }
+
+        #endregion
     }
 }

@@ -45,7 +45,7 @@ namespace DefaultNamespace
             var downArrow = GameObjectFinder.FindSingleObjectByName("DateFilter");
             downArrow.transform.rotation = Quaternion.Euler(0,0, 90);
             
-            var orderEntryObjects = GameObjectFinder.FindObjectsByName("OrderEntry(Clone)");
+            var orderEntryObjects = GameObjectFinder.FindMultipleObjectsByName("OrderEntry(Clone)");
 
             for (int i = 0; i < orderEntryObjects.Length; i++)
             {
@@ -89,7 +89,7 @@ namespace DefaultNamespace
 
         private void FilterOrdersByStatus(string status)
         {
-            var orderEntryObjects = GameObjectFinder.FindObjectsByName("OrderEntry(Clone)");
+            var orderEntryObjects = GameObjectFinder.FindMultipleObjectsByName("OrderEntry(Clone)");
 
             if (status == "All")
             {

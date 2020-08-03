@@ -23,7 +23,7 @@ namespace DefaultNamespace
         private void Start()
         {
             var savedOrders = GetSavedOrders();
-            var orderEntryContentHolder = GameObjectFinder.FindObjectsByName("OrderEntryContent");
+            var orderEntryContentHolder = GameObjectFinder.FindMultipleObjectsByName("OrderEntryContent");
             _orderHolderTransform = orderEntryContentHolder[0].transform;
 
             _orderCatalogueEntryTransformList = new List<Transform>();
@@ -65,6 +65,8 @@ namespace DefaultNamespace
 
             if (savedOrders.orderEntries.Count > maxNumberOfEntries)
             {
+                savedOrders.orderEntries.Clear();
+                savedOrders.orderEntries.Add(orderEntry);
                 Debug.LogError("Error - Max number of orders have been entered into order table");
             }
             

@@ -1065,6 +1065,16 @@ PrefabInstance:
       propertyPath: m_textInfo.pageCount
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6550214658228166387, guid: 3903cebe752ae774ea1b31c185b57641,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 6550214658228166387, guid: 3903cebe752ae774ea1b31c185b57641,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 24
+      objectReference: {fileID: 0}
     - target: {fileID: 8817818179277540479, guid: 3903cebe752ae774ea1b31c185b57641,
         type: 3}
       propertyPath: m_LocalPosition.x
