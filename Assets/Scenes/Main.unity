@@ -919,6 +919,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3964302485299371230, guid: 5021f5d0d5e06dd4a9b642a5aa160db3,
+        type: 3}
+      propertyPath: m_Name
+      value: OrderEntryViewport
+      objectReference: {fileID: 0}
     - target: {fileID: 3964302485512329475, guid: 5021f5d0d5e06dd4a9b642a5aa160db3,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1037,6 +1042,11 @@ PrefabInstance:
     - target: {fileID: 4061196740792230276, guid: 5021f5d0d5e06dd4a9b642a5aa160db3,
         type: 3}
       propertyPath: m_textInfo.pageCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4158556718671676011, guid: 5021f5d0d5e06dd4a9b642a5aa160db3,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4220026634057366436, guid: 5021f5d0d5e06dd4a9b642a5aa160db3,

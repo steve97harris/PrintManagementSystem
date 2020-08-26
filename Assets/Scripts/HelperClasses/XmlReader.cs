@@ -26,10 +26,19 @@ namespace DefaultNamespace
             return map;
         }
 
-        public static string GetUniqueCode(FileSystemEventArgs e)
+        public static string GetUniqueCodeWithEventsArgs(FileSystemEventArgs e)
         {
             var doc = new XmlDocument();
             doc.Load(e.FullPath);
+
+            var uniqueCode = doc.GetElementsByTagName("UNIQUE_CODE")[0].InnerText;
+            return uniqueCode;
+        }
+
+        public static string GetUniqueCodeWithFilePath(string path)
+        {
+            var doc = new XmlDocument();
+            doc.Load(path);
 
             var uniqueCode = doc.GetElementsByTagName("UNIQUE_CODE")[0].InnerText;
             return uniqueCode;

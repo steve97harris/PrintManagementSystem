@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using iTextSharp.text;
 using TMPro;
-using TMPro.EditorUtilities;
 using UnityEngine;
 using Image = UnityEngine.UI.Image;
 
@@ -48,7 +47,9 @@ namespace DefaultNamespace
 
         private void SetEntryStatusChange(string status)
         {
-            var savedOrders = OrderTable.GetSavedOrders();
+            var orderManagerObj = GameObjectFinder.FindSingleObjectByName("OrderManager");
+            var orderTable = orderManagerObj.GetComponent<OrderTable>();
+            var savedOrders = orderTable.GetSavedOrders();
             var orderEntries = savedOrders.orderEntries;
             var orderEntryObject = transform.parent.gameObject;
             
@@ -58,7 +59,7 @@ namespace DefaultNamespace
                 orderEntryObject.GetComponent<OrderEntryUniqueCode>().entryStatus = status;
             }
             
-            OrderTable.SaveOrders(savedOrders);
+            orderTable.SaveOrders(savedOrders);
         }
 
         #endregion

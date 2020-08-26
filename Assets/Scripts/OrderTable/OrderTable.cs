@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 
@@ -8,46 +9,50 @@ namespace DefaultNamespace
 {
     public class OrderTable : MonoBehaviour
     {
+        public static OrderTable instance;
+        
         [SerializeField] private int maxNumberOfEntries = 1000;
         [SerializeField] private GameObject orderEntryObject = null;
-        private Transform _orderHolderTransform = null;
 
         private List<Transform> _orderCatalogueEntryTransformList;
-
-        private string _previousOrder = "";
-
+        
         private static string JsonTablePath => $"{Application.persistentDataPath}/orderTable.json";
 
         #region Event Functions
 
+        private void OnEnable()
+        {
+            if (instance == null)
+            {
+                instance = this;
+            }
+        }
+
         private void Start()
         {
             var savedOrders = GetSavedOrders();
-            var orderEntryContentHolder = GameObjectFinder.FindMultipleObjectsByName("OrderEntryContent");
-            _orderHolderTransform = orderEntryContentHolder[0].transform;
-
+            
             _orderCatalogueEntryTransformList = new List<Transform>();
             UpdateUi(savedOrders, _orderCatalogueEntryTransformList);
 
             SaveOrders(savedOrders);
         }
 
-        private void Update()
+        public void Update()
         {
-            if (OrderWatcher.CurrentOrderUniqueCode == "" || OrderWatcher.CurrentOrderUniqueCode == _previousOrder) 
-                return;
-
-            var currentOrderArray = OrderWatcher.CurrentOrderUniqueCode;
-            SetOrderEntryInfo(currentOrderArray);
-
-            _previousOrder = OrderWatcher.CurrentOrderUniqueCode;
+            if (OrderWatcher.CurrentOrderUniqueCode != OrderWatcher._previousOrderCode &&
+                OrderWatcher.CurrentOrderUniqueCode != "")
+            {
+                SetOrderEntryInfo(OrderWatcher.CurrentOrderUniqueCode);
+                OrderWatcher._previousOrderCode = OrderWatcher.CurrentOrderUniqueCode;
+            }
         }
 
         #endregion
 
         #region New Order Entry Functions
 
-        private void SetOrderEntryInfo(string uniqueCode)
+        public void SetOrderEntryInfo(string uniqueCode)
         {
             AddOrderEntry(new OrderEntry()
             {
@@ -59,15 +64,29 @@ namespace DefaultNamespace
         private void AddOrderEntry(OrderEntry orderEntry)
         {
             var savedOrders = GetSavedOrders();
+            
+            Debug.LogError(orderEntry.uniqueCode);
 
-            if (savedOrders.orderEntries.Count < maxNumberOfEntries)
-                savedOrders.orderEntries.Add(orderEntry);
-
-            if (savedOrders.orderEntries.Count > maxNumberOfEntries)
+            if (savedOrders == null)
             {
-                savedOrders.orderEntries.Clear();
-                savedOrders.orderEntries.Add(orderEntry);
-                Debug.LogError("Error - Max number of orders have been entered into order table");
+                savedOrders = new OrderTableSaveData
+                {
+                    orderEntries = new List<OrderEntry> {orderEntry}
+                };
+            }
+            else
+            {
+                if (savedOrders.orderEntries.Count < maxNumberOfEntries)
+                {
+                    savedOrders.orderEntries.Add(orderEntry);
+                }
+
+                if (savedOrders.orderEntries.Count > maxNumberOfEntries)
+                {
+                    savedOrders.orderEntries.Clear();
+                    savedOrders.orderEntries.Add(orderEntry);
+                    Debug.LogError("Error - Max number of orders have been entered into order table");
+                }
             }
             
             _orderCatalogueEntryTransformList = new List<Transform>();
@@ -81,7 +100,18 @@ namespace DefaultNamespace
 
         private void UpdateUi(OrderTableSaveData savedOrders, List<Transform> transformList)
         {
-            foreach (Transform child in _orderHolderTransform)
+            if (savedOrders == null)
+            {
+                Debug.LogError("OrderTableSaveData returned null");
+                return;
+            }
+        
+            var orderHolder = Resources.Load<GameObject>("Prefabs/Content/OrderEntryContent");
+
+            var viewport = GameObjectFinder.FindSingleObjectByName("OrderEntryViewport").transform;
+            var orderEntryContentHolder = Instantiate(orderHolder, viewport);
+            
+            foreach (Transform child in orderEntryContentHolder.transform)
             {
                 Destroy(child.gameObject);
             }
@@ -89,7 +119,7 @@ namespace DefaultNamespace
             foreach (var entry in savedOrders.orderEntries)
             {
                 var templateHeight = 100f;
-                var entryObject = Instantiate(orderEntryObject, _orderHolderTransform);
+                var entryObject = Instantiate(orderEntryObject, orderEntryContentHolder.transform);
                 entryObject.GetComponent<OrderEntryUniqueCode>().InitialiseOrderEntry(entry);
                 var entryRectTransform = entryObject.GetComponent<RectTransform>();
                 entryRectTransform.anchoredPosition = new Vector2(0,-templateHeight * transformList.Count);
@@ -128,7 +158,7 @@ namespace DefaultNamespace
 
         #region Json Functions
 
-        public static OrderTableSaveData GetSavedOrders()
+        public OrderTableSaveData GetSavedOrders()
         {
             if (!File.Exists(JsonTablePath))
             {
@@ -145,7 +175,7 @@ namespace DefaultNamespace
             }
         }
 
-        public static void SaveOrders(OrderTableSaveData orderTableSaveData)
+        public void SaveOrders(OrderTableSaveData orderTableSaveData)
         {
             using (StreamWriter stream = new StreamWriter(JsonTablePath))
             {
